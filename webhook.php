@@ -52,7 +52,7 @@ More info can be found here: https://zencash.com/securenodes
     //ToDo: Extract current daily reward from site and add to message
     //ToDo: Add calculations
     sendMessage($chatId, '
-You can see the current daily reward for a secure node here: https://securenodes.zensystems.io
+You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
 ');
     break;
 
