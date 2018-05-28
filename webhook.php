@@ -91,6 +91,6 @@ https://telegram.me/zencashhelp_bot?start=commands
 
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /help if you need assistance or contact @DatDraggy.');
+      sendMessage($chatId, 'Unknown command! Use /commands if you need assistance or contact @DatDraggy.');
     }
 }
