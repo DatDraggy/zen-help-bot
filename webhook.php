@@ -7,12 +7,15 @@ $data = json_decode($response, true);
 $dump = print_r($data, true);
 
 $chatId = $data['message']['chat']['id'];
-$chatType = $chatName = $chatId = $data['message']['chat']['type'];
+$chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
   $command = $messageArr[0];
+  if($messageArr[1] == 'commands'){
+    $command = '/commands';
+  }
 }
 else{
   die();
@@ -21,13 +24,22 @@ else{
 $nodeText = 'We have <a href="https://zencash.com/securenodes">secure nodes</a> and will hopefully deploy the <b>super nodes</b> in July.
 A <i>secure</i> node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
 
-switch ($command){
-  case '/ping':
-    sendMessage($chatId,'Pong.');
-    break;
+switch ($command) {
+  case '/start':
+    if ($chatType === 'private') {
+      sendMessage($chatId, 'Hello!
+    
+I\'m the ZenCash Help Bot. I can provide quick information about topics when I see a command that I know.
+To get a list of all commands I know, simply send /commands to me.
+
+I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot');
+    }
+      break;
+
   case '/nodes':
     sendMessage($chatId, $nodeText);
     break;
+
   case '/securenode':
   case '/securenodes':
     sendMessage($chatId, '
@@ -35,29 +47,50 @@ For a secure node, you need a small VPS with a single core cpu, ~20GB space, 4GB
 More info can be found here: https://zencash.com/securenodes 
 ');
     break;
+
   case '/securenodesreward':
+    //ToDo: Extract current daily reward from site and add to message
+    //ToDo: Add calculations
     sendMessage($chatId, '
 You can see the current daily reward for a secure node here: https://securenodes.zensystems.io
 ');
     break;
+
   case '/masternodes':
     sendMessage($chatId, '
 We do not have masternodes. ' . $nodeText . '
 ');
     break;
-  default:
-    if($chatType === 'private'){
+
+  case '/commands':
+    if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
 
+/start
+/nodes
+/securenodes
+/securenodesreward
 /masternodes
+/commands
 /ping
-/securenode
 ');
     }
-    else{
+    else {
+      //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
-
+Click here to get a list of all commands:
+https://telegram.me/zencashhelp_bot?start=commands
 ');
+    }
+    break;
+
+  case '/ping':
+    sendMessage($chatId, 'Pong.');
+    break;
+
+  default:
+    if ($chatType === 'private') {
+      sendMessage($chatId, 'Unknown command! Use /help if you need assistance or contact @DatDraggy.');
     }
 }
