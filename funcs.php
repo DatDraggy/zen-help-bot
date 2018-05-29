@@ -10,3 +10,9 @@ function getCurrentReward() {
   $data = json_decode($json, true);
   return $data['userdata']['estearn'];
 }
+
+function getCurrentPrice() {
+  $bittrexJson = file_get_contents('https://bittrex.com/api/v1.1/public/getticker?market=BTC-ZEN');
+  $prices = json_decode($bittrexJson, true);
+  return $prices['result']['Last'];
+}

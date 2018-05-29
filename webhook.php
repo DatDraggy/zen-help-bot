@@ -1,7 +1,6 @@
 <?php
 require_once(__DIR__ . "/funcs.php");
 require_once(__DIR__ . "/config.php");
-//http://simplehtmldom.sourceforge.net/
 
 $response = file_get_contents('php://input');
 $data = json_decode($response, true);
@@ -38,10 +37,7 @@ I am also open source, so if you like you can add your own commands by creating 
       break;
 
   case '/price':
-    $bittrexJson = file_get_contents('https://bittrex.com/api/v1.1/public/getticker?market=BTC-ZEN');
-    $prices = json_decode($bittrexJson, true);
-    $price = $prices['result']['Last'];
-    sendMessage($chatId, 'Current ZenCash price: ' . $price . '
+    sendMessage($chatId, 'Current ZenCash price: ' . getCurrentPrice() . '
 <code>Source: Bittrex</code>');
     break;
 
@@ -52,18 +48,15 @@ I am also open source, so if you like you can add your own commands by creating 
   case '/securenode':
   case '/securenodes':
     sendMessage($chatId, '
-For a secure node, you need a small VPS with a single core cpu, ~20GB space, 4GB RAM + some swap and a domain.
+For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB space, 3-4GB RAM + some swap and a domain. 
+
 More info can be found here: https://zencash.com/securenodes 
 ');
     break;
 
   case '/securenodesreward':
-    //ToDo: Extract current daily reward from site and add to message
     //ToDo: Add calculations
-
-
-    $reward = getCurrentReward();
-    sendMessage($chatId, 'Current reward per day: '.$reward.'
+    sendMessage($chatId, 'Current earnings per day: '.getCurrentReward().'
 
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
 ');
