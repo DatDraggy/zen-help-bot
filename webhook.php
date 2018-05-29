@@ -98,7 +98,9 @@ https://telegram.me/zencashhelp_bot?start=commands
   case '/ping':
     sendMessage($chatId, 'Pong.');
     break;
-
+  case '/testdev':
+    require_once('testdev.php');
+    break;
   default:
     if ($chatType === 'private') {
       sendMessage($chatId, 'Unknown command! Use /commands if you need assistance or contact @DatDraggy.');

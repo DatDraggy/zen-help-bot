@@ -18,3 +18,7 @@ function getCurrentPrice() {
 24h High: ' . number_format($prices['result']['High'], 8) . '
 24h Low: ' . number_format($prices['result']['Low'], 8);
 }
+
+function getLastOnlineAdmins() {
+
+}
