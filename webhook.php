@@ -36,6 +36,14 @@ I am also open source, so if you like you can add your own commands by creating 
     }
       break;
 
+  case '/price':
+    $bittrexJson = file_get_contents('https://bittrex.com/api/v1.1/public/getticker?market=BTC-ZEN');
+    $prices = json_decode($bittrexJson, true);
+    $price = $prices['result']['Last'];
+    sendMessage($chatId, 'Current ZenCash price: ' . $price . '
+    <code>Source: Bittrex</code>');
+    break;
+
   case '/nodes':
     sendMessage($chatId, $nodeText);
     break;
@@ -63,16 +71,19 @@ We do not have masternodes. ' . $nodeText . '
     break;
 
   case '/commands':
+  case '/help':
     if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
 
+/price
 /start
 /nodes
 /securenodes
 /securenodesreward
 /masternodes
 /commands
+/help
 /ping
 ');
     }
