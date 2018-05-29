@@ -71,7 +71,7 @@ We do not have masternodes. ' . $nodeText . '
 
   case '/commands':
   case '/help':
-    if ($chatType === 'private') {
+    if ($chatType === 'private2') {
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
 
