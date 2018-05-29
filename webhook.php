@@ -13,8 +13,8 @@ $message = $data['message']['text'];
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
   $command = $messageArr[0];
-  if($messageArr[1] == 'commands'){
-    $command = '/commands';
+  if($messageArr[1] == 'zencommands'){
+    $command = '/zencommands';
   }
 }
 else{
@@ -30,7 +30,7 @@ switch ($command) {
       sendMessage($chatId, 'Hello!
     
 I\'m the ZenCash Help Bot. I can provide quick information about topics when I see a command that I know.
-To get a list of all commands I know, simply send /commands to me.
+To get a list of all commands I know, simply send /zencommands to me.
 
 I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot');
     }
@@ -103,6 +103,6 @@ Click here to get a list of all commands:
     break;
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /commands if you need assistance or contact @DatDraggy.');
+      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.');
     }
 }
