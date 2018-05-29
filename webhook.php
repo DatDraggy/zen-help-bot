@@ -87,11 +87,10 @@ Here is a small list of available commands. Click them to find out what they say
 ');
     }
     else {
-      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "A", "url" => "https://google.com"))));
+      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/commands", "url" => "https://telegram.me/zencashhelp_bot?start=commands"))));
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
-https://telegram.me/zencashhelp_bot?start=commands
 ', json_encode($replyMarkup));
     }
     break;
