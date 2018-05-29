@@ -60,7 +60,7 @@ More info can be found here: https://zencash.com/securenodes
     //ToDo: Extract current daily reward from site and add to message
     //ToDo: Add calculations
     sendMessage($chatId, '
-You can see the current daily reward for a secure node here: https://securenodes.zensystems.io
+You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
 ');
     break;
 
@@ -102,6 +102,6 @@ https://telegram.me/zencashhelp_bot?start=commands
 
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /help if you need assistance or contact @DatDraggy.');
+      sendMessage($chatId, 'Unknown command! Use /commands if you need assistance or contact @DatDraggy.');
     }
 }
