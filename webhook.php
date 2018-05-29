@@ -69,9 +69,9 @@ We do not have masternodes. ' . $nodeText . '
 ');
     break;
 
-  case '/commands':
-  case '/help':
-    if ($chatType === 'private2') {
+  case '/zencommands':
+  case '/zenhelp':
+    if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
 
@@ -81,8 +81,8 @@ Here is a small list of available commands. Click them to find out what they say
 /securenodes
 /securenodesreward
 /masternodes
-/commands
-/help
+/zencommands
+/zenhelp
 /ping
 ');
     }
