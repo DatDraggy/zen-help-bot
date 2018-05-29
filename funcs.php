@@ -1,8 +1,8 @@
 <?php
-function sendMessage($chatId, $text) {
+function sendMessage($chatId, $text, $replyMarkup = '') {
   global $config;
   $url = 'https://api.telegram.org/bot' . $config['token'] . '/';
-  $response = file_get_contents($url . 'sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=' . $chatId . '&text=' . urlencode($text));
+  $response = file_get_contents($url . 'sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=' . $chatId . '&text=' . urlencode($text) . '&reply_markup=' . $replyMarkup);
   //Might use http_build_query in the future
 }
 
