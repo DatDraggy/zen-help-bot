@@ -37,7 +37,8 @@ I am also open source, so if you like you can add your own commands by creating 
       break;
 
   case '/price':
-    sendMessage($chatId, 'Current ZenCash price: ' . getCurrentPrice() . '
+    sendMessage($chatId, getCurrentPrice() . '
+
 <code>Source: Bittrex</code>');
     break;
 

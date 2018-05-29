@@ -12,7 +12,9 @@ function getCurrentReward() {
 }
 
 function getCurrentPrice() {
-  $bittrexJson = file_get_contents('https://bittrex.com/api/v1.1/public/getticker?market=BTC-ZEN');
+  $bittrexJson = file_get_contents('https://bittrex.com/Api/v2.0/pub/market/GetMarketSummary?marketName=BTC-ZEN');
   $prices = json_decode($bittrexJson, true);
-  return $prices['result']['Last'];
+  return 'Last ZenCash price: ' . $prices['result']['Last'] . '
+24h High: ' . $prices['result']['High'] . '
+24h Low: ' . $prices['result']['Low'];
 }
