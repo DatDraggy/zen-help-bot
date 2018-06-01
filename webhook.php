@@ -208,7 +208,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
               $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:useriedToUserId, :repliedToName, :repliedToUsername, '1')");
               $stmt->bindParam(':repliedToUserId', $repliedToUserId);
               $stmt->bindParam(':repliedToName', $repliedToName);
-              $stmt->bindParam(':repliedToUserame', $repliedToUsername);
+              $stmt->bindParam(':repliedToUsername', $repliedToUsername);
               $stmt->execute();
             } catch (PDOException $e) {
               $to = $config['mail'];
@@ -233,6 +233,6 @@ Their thank-score will be raised which will hopefully encourage in more people h
     break;
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.');
+      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.', '', $messageId);
     }
 }
