@@ -182,17 +182,17 @@ Their thank-score will be raised which will hopefully encourage in more people h
             $headers = 'From: ' . $config['mail'];
             mail($to, $subject, $txt, $headers);
           }
-          mail($config['mail'], 'Test', print_r($row, true));
+          mail($config['mail'], 'Test', $sql.print_r($row, true));
           die();
 
 
           //if not exist
           try {
-            $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUserame', '1')";
-            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (':useriedToUserId', ':repliedToName', ':repliedToUserame', '1')");
+            $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
+            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (':useriedToUserId', ':repliedToName', ':repliedToUsername', '1')");
             $stmt->bindParam(':useriedToUserId', $repliedToUserId);
             $stmt->bindParam(':repliedToName', $repliedToName);
-            $stmt->bindParam(':repliedToUserame', $repliedToUserame);
+            $stmt->bindParam(':repliedToUserame', $repliedToUsername);
             $stmt->execute();
           } catch (PDOException $e) {
             $to = $config['mail'];
