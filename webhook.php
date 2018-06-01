@@ -100,12 +100,11 @@ Click here to get a list of all commands:
     sendMessage($chatId, 'Pong.');
     break;
   case '/zenadmins':
-    $admins = 'These are the admins in this group:
+    $adminText = 'These are the admins in this group:
 
 ';
     if($chatType !== 'private') {
-      $admins = $admins . getAdmins($chatId);
-      sendMessage($chatId, $admins . getAdmins($chatId));
+      sendMessage($chatId, $adminText . getAdmins($chatId));
     }
     break;
   case '/testdev':
