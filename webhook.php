@@ -85,10 +85,12 @@ Here is a small list of available commands. Click them to find out what they say
 /zenhelp
 /ping
 /zenadmins
+/wallets
+/freezen
 ');
     }
     else {
-      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/commands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
+      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
@@ -100,12 +102,33 @@ Click here to get a list of all commands:
     sendMessage($chatId, 'Pong.');
     break;
   case '/zenadmins':
-    $adminText = 'These are the admins in this group:
+    $adminText = 'Here is a list of all admins in this group:
 
 ';
     if($chatType !== 'private') {
       sendMessage($chatId, $adminText . getAdmins($chatId));
     }
+    break;
+  case '/wallets':
+    $walletText = 'We currently have two types of wallet clients. There\'s the full wallet, called <a href="https://github.com/ZencashOfficial/zencash-swing-wallet-ui/releases">Swing</a>, and then there is also the light wallets, called <a href="https://github.com/ZencashOfficial/arizen/releases">Arizen</a> and <a href="https://play.google.com/store/apps/details?id=io.zensystem.zencashwallet">ZenCash Mobile</a>.
+
+The full wallet is capable of using z-addresses, which are also known as private addresses. Swing needs to download the entire blockchain, but that will take a while and is gonna use some space on your harddrive.
+
+The light wallets on the other hand don\'t need the full blockchain and can only <i>send</i> to z-addrs, but can send and receive on t-addresses. 
+
+If you would rather use a web wallet or even a paper wallet, take a look here: https://zencash.com/wallets/
+';
+    sendMessage($chatId, $walletText);
+    break;
+  case '/freezen':
+    sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, <a href="http://getzen.cash">getzen.cash</a>. 
+
+You will have to register and can only receive free ZEN every 20 hours.');
+    break;
+  case '/helpdesk':
+  case '/zensupport':
+    sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
+    https://support.zencash.com');
     break;
   case '/testdev':
     require_once('testdev.php');

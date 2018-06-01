@@ -42,7 +42,7 @@ function getAdmins($chatId) {
       unset($admins[$adminKey]);
     }
   }
-  
+
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
@@ -56,4 +56,8 @@ function getAdmins($chatId) {
     }
   }
   return $result;
+}
+
+function buildMarkup($arrays){
+  return 1;
 }
