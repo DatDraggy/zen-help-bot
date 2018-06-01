@@ -47,7 +47,7 @@ function getAdmins($chatId) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
     $lastName = '';
-    if(isset($admin['user']['last_name'])){
+    if (isset($admin['user']['last_name'])) {
       $lastName = ' ' . $admin['user']['last_name'];
     }
     if (empty($is_bot)) {
@@ -58,6 +58,6 @@ function getAdmins($chatId) {
   return $result;
 }
 
-function buildMarkup($arrays){
+function buildMarkup($arrays) {
   return 1;
 }

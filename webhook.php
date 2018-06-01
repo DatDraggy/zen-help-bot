@@ -13,11 +13,11 @@ $message = $data['message']['text'];
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
   $command = $messageArr[0];
-  if(isset($messageArr[1]) && $messageArr[1] == 'zencommands'){
+  if (isset($messageArr[1]) && $messageArr[1] == 'zencommands') {
     $command = '/zencommands';
   }
 }
-else{
+else {
   die();
 }
 
@@ -34,7 +34,7 @@ To get a list of all commands I know, simply send /zencommands to me.
 
 I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot');
     }
-      break;
+    break;
 
   case '/zenprice':
     sendMessage($chatId, getCurrentPrice() . '
@@ -57,7 +57,7 @@ More info can be found here: https://zencash.com/securenodes
 
   case '/securenodesreward':
     //ToDo: Add calculations
-    sendMessage($chatId, 'Current earnings per day: '.getCurrentReward().'
+    sendMessage($chatId, 'Current earnings per day: ' . getCurrentReward() . '
 
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
 ');
@@ -90,7 +90,16 @@ Here is a small list of available commands. Click them to find out what they say
 ');
     }
     else {
-      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
+      $replyMarkup = array(
+        'inline_keyboard' => array(
+          array(
+            array(
+              "text" => "/zencommands",
+              "url"  => "https://telegram.me/zencashhelp_bot?start=zencommands"
+            )
+          )
+        )
+      );
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
@@ -102,21 +111,24 @@ Click here to get a list of all commands:
     sendMessage($chatId, 'Pong.');
     break;
   case '/zenadmins':
-    $adminText = 'Here is a list of all admins in this group:
+    if ($chatType !== 'private') {
+      $adminText = 'Here is a list of all admins in this group:
 
 ';
-    if($chatType !== 'private') {
       sendMessage($chatId, $adminText . getAdmins($chatId));
+    }
+    else {
+      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
     }
     break;
   case '/wallets':
     $walletText = 'We currently have two types of wallet clients. There\'s the full wallet, called <a href="https://github.com/ZencashOfficial/zencash-swing-wallet-ui/releases">Swing</a>, and then there is also the light wallets, called <a href="https://github.com/ZencashOfficial/arizen/releases">Arizen</a> and <a href="https://play.google.com/store/apps/details?id=io.zensystem.zencashwallet">ZenCash Mobile</a>.
 
-The full wallet is capable of using z-addresses, which are also known as private addresses. Swing needs to download the entire blockchain, but that will take a while and is gonna use some space on your harddrive.
+The full wallet is capable of using z-addresses, which are also known as private addresses. Swing needs to download the entire blockchain, but that will take a while and is going to use some space on your harddrive. It\'t availalbe for macOS, Windows 7+ 64bit and Linux.
 
-The light wallets on the other hand don\'t need the full blockchain and can only <i>send</i> to z-addrs, but can send and receive on t-addresses. 
+The light wallets on the other hand don\'t need the full blockchain and can only <i>send</i> to z-addrs, but can send and receive on t-addresses. Arizen is available on macOS, Windows and Linux. The mobile wallet only on Android, but you can use Coinomi on iOS.
 
-If you would rather use a web wallet or even a paper wallet, take a look here: https://zencash.com/wallets/
+If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
 ';
     sendMessage($chatId, $walletText);
     break;
