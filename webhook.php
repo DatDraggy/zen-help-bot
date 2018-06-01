@@ -205,7 +205,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             //if not exist, create entry
             try {
               $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
-              $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:useriedToUserId, :repliedToName, :repliedToUsername, '1')");
+              $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername, '1')");
               $stmt->bindParam(':repliedToUserId', $repliedToUserId);
               $stmt->bindParam(':repliedToName', $repliedToName);
               $stmt->bindParam(':repliedToUsername', $repliedToUsername);
