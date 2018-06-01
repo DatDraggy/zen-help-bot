@@ -10,7 +10,7 @@ $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 $senderUserId = $data['message']['from']['id'];
-if(isset($date['message']['reply_to_message'])){
+if(isset($data['message']['reply_to_message'])){
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
   $repliedToUserId = $replyToMessage['from']['id'];
@@ -18,9 +18,9 @@ if(isset($date['message']['reply_to_message'])){
   if(isset($replyToMessage['from']['last_name'])){
     $repliedToName = $repliedToName . ' ' . $replyToMessage['from']['last_name'];
   }
-  $repliedToUserame = NULL;
+  $repliedToUsername = NULL;
   if(isset($replyToMessage['from']['username'])){
-    $repliedToUserame = $replyToMessage['from']['username'];
+    $repliedToUsername = $replyToMessage['from']['username'];
   }
 }
 
