@@ -182,14 +182,19 @@ Their thank-score will be raised which will hopefully encourage in more people h
             $headers = 'From: ' . $config['mail'];
             mail($to, $subject, $txt, $headers);
           }
-          mail($config['mail'], 'Test', $sql.print_r($row, true));
+          if(!empty($row)){
+            sendMessage($chatId, 'oh');
+          }
+          else{
+            sendMessage($chatId, 'what');
+          }
           die();
 
 
           //if not exist
           try {
             $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
-            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (':useriedToUserId', ':repliedToName', ':repliedToUsername', '1')");
+            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:useriedToUserId, :repliedToName, :repliedToUsername, '1')");
             $stmt->bindParam(':useriedToUserId', $repliedToUserId);
             $stmt->bindParam(':repliedToName', $repliedToName);
             $stmt->bindParam(':repliedToUserame', $repliedToUsername);
