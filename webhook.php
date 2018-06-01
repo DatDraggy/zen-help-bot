@@ -148,8 +148,6 @@ You will have to register and can only receive free ZEN every 20 hours.');
     https://support.zencash.com');
     break;
   case '/thanks':
-
-    sendMessage($chatId, $repliedToUserId);
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.');
@@ -176,7 +174,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = ':repliedToUserId'");
             $stmt->bindParam(':repliedToUserId', $repliedToUserId);
             $stmt->execute();
-            $row = $stmt->fetch();
+            $row = $stmt->fetchAll();
           } catch (PDOException $e) {
             $to = $config['mail'];
             $subject = 'Database insert';
@@ -185,7 +183,6 @@ Their thank-score will be raised which will hopefully encourage in more people h
             mail($to, $subject, $txt, $headers);
           }
           mail($config['mail'], 'Test', print_r($row, true));
-          sendMessage($chatId, $repliedToUserId);
           die();
 
 
