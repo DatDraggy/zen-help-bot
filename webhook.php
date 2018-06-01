@@ -36,7 +36,7 @@ I am also open source, so if you like you can add your own commands by creating 
     }
       break;
 
-  case '/price':
+  case '/zenprice':
     sendMessage($chatId, getCurrentPrice() . '
 
 <code>Source: Bittrex</code>');
@@ -75,7 +75,7 @@ We do not have masternodes. ' . $nodeText . '
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
 
-/price
+/zenprice
 /start
 /nodes
 /securenodes
@@ -84,6 +84,7 @@ Here is a small list of available commands. Click them to find out what they say
 /zencommands
 /zenhelp
 /ping
+/zenadmins
 ');
     }
     else {
@@ -97,6 +98,11 @@ Click here to get a list of all commands:
 
   case '/ping':
     sendMessage($chatId, 'Pong.');
+    break;
+  case '/zenadmins':
+    if($chatType !== 'private') {
+      getAdmins($chatId);
+    }
     break;
   case '/testdev':
     require_once('testdev.php');

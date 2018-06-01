@@ -1,8 +1,8 @@
 <?php
+//$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyMarkup = '') {
   global $config;
-  $url = 'https://api.telegram.org/bot' . $config['token'] . '/';
-  $response = file_get_contents($url . 'sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=' . $chatId . '&text=' . urlencode($text) . '&reply_markup=' . $replyMarkup);
+  $response = file_get_contents($config['url'] . 'sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=' . $chatId . '&text=' . urlencode($text) . '&reply_markup=' . $replyMarkup);
   //Might use http_build_query in the future
 }
 
@@ -20,6 +20,9 @@ function getCurrentPrice() {
 24h Low: ' . number_format($prices['result']['Low'], 8);
 }
 
-function getLastOnlineAdmins() {
-
+function getAdmins($chatId) {
+  global $config;
+  $response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id='.$chatId);
+  //Do things
 }
+
