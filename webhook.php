@@ -76,6 +76,7 @@ We do not have masternodes. ' . $nodeText . '
 Here is a small list of available commands. Click them to find out what they say.
 
 /zenprice
+/zengroups
 /start
 /nodes
 /securenodes
@@ -87,6 +88,7 @@ Here is a small list of available commands. Click them to find out what they say
 /zenadmins
 /wallets
 /freezen
+/helpdesk
 ');
     }
     else {
@@ -142,7 +144,26 @@ You will have to register and can only receive free ZEN every 20 hours.');
     sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
     https://support.zencash.com');
     break;
-  case '/testdev':
+  case '/thanks':
+
+      if($chatType === 'private'){
+        sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
+Their thank-score will be raised which will hopefully encourage in more people helping.');
+      }
+      else {
+        /*
+         * if(message is reply or $messageArr[1] has @){
+         * get replied to username and messageId
+         * count + in database
+         * select count
+         * sendReply($chatId, $messageId, 'Awesome! @\'s thank-score is now ' . $thankCount . ' thank-yous');
+         * }
+         */
+      }
+
+
+    break;
+    case '/testdev':
     require_once('testdev.php');
     break;
   default:
