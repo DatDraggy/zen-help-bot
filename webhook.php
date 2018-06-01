@@ -9,6 +9,15 @@ $dump = print_r($data, true);
 $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
+if(isset($date['message']['reply_to_message'])){
+  $replyToMessage = $data['message']['reply_to_message'];
+  $repliedToMessageId = $replyToMessage['message_id'];
+  $repliedToUserId = $replyToMessage['from']['id'];
+  $repliedToName = $replyToMessage['from']['first_name'];
+  if(isset($replyToMessage['from']['last_name'])){
+    $repliedToName = $repliedToName . ' ' . $replyToMessage['from']['last_name'];
+  }
+}
 
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
@@ -153,15 +162,15 @@ Their thank-score will be raised which will hopefully encourage in more people h
       else {
         /*
          * if(message is reply or $messageArr[1] has @){
+         * if(username is not replied_to username){
          * get replied to username and messageId
          * count + in database
          * select count
          * sendReply($chatId, $messageId, 'Awesome! @\'s thank-score is now ' . $thankCount . ' thank-yous');
          * }
+         * }
          */
       }
-
-
     break;
     case '/testdev':
     require_once('testdev.php');
