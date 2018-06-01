@@ -42,7 +42,7 @@ function getAdmins($chatId) {
       unset($admins[$adminKey]);
     }
   }
-  return print_r($admins, true);
+  
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
