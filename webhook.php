@@ -9,6 +9,7 @@ $dump = print_r($data, true);
 $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
+$messageId = $data['message']['message_id'];
 $senderUserId = $data['message']['from']['id'];
 if(isset($data['message']['reply_to_message'])){
   $replyToMessage = $data['message']['reply_to_message'];
@@ -46,18 +47,18 @@ switch ($command) {
 I\'m the ZenCash Help Bot. I can provide quick information about topics when I see a command that I know.
 To get a list of all commands I know, simply send /zencommands to me.
 
-I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot');
+I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot', '', $messageId);
     }
     break;
 
   case '/zenprice':
     sendMessage($chatId, getCurrentPrice() . '
 
-<code>Source: Bittrex</code>');
+<code>Source: Bittrex</code>', '', $messageId);
     break;
 
   case '/nodes':
-    sendMessage($chatId, $nodeText);
+    sendMessage($chatId, $nodeText, '', $messageId);
     break;
 
   case '/securenode':
@@ -66,7 +67,7 @@ I am also open source, so if you like you can add your own commands by creating 
 For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB space, 3-4GB RAM + some swap and a domain. 
 
 More info can be found here: https://zencash.com/securenodes 
-');
+', '', $messageId);
     break;
 
   case '/securenodesreward':
@@ -74,17 +75,18 @@ More info can be found here: https://zencash.com/securenodes
     sendMessage($chatId, 'Current earnings per day: ' . getCurrentReward() . '
 
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
-');
+', '', $messageId);
     break;
 
   case '/masternodes':
     sendMessage($chatId, '
 We do not have masternodes. ' . $nodeText . '
-');
+', '', $messageId);
     break;
 
   case '/zencommands':
   case '/zenhelp':
+  case '/zenhelp@ZenCashHelp_bot':
     if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a small list of available commands. Click them to find out what they say.
@@ -103,27 +105,27 @@ Here is a small list of available commands. Click them to find out what they say
 /wallets
 /freezen
 /helpdesk
-');
+', '', $messageId);
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
-', json_encode($replyMarkup));
+', json_encode($replyMarkup), $messageId);
     }
     break;
 
   case '/ping':
-    sendMessage($chatId, 'Pong.');
+    sendMessage($chatId, 'Pong.', '', $messageId);
     break;
   case '/zenadmins':
     if ($chatType !== 'private') {
       $adminText = 'Here is a list of all admins in this group:
 
 ';
-      sendMessage($chatId, $adminText . getAdmins($chatId));
+      sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageId);
     } else {
-      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
+      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉', '', $messageId);
     }
     break;
   case '/wallets':
@@ -135,22 +137,22 @@ The light wallets on the other hand don\'t need the full blockchain and can only
 
 If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
 ';
-    sendMessage($chatId, $walletText);
+    sendMessage($chatId, $walletText, '', $messageId);
     break;
   case '/freezen':
     sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, <a href="http://getzen.cash">getzen.cash</a>. 
 
-You will have to register and can only receive free ZEN every 20 hours.');
+You will have to register and can only receive free ZEN every 20 hours.', '', $messageId);
     break;
   case '/helpdesk':
   case '/zensupport':
     sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
-    https://support.zencash.com');
+    https://support.zencash.com', '', $messageId);
     break;
   case '/thanks':
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
-Their thank-score will be raised which will hopefully encourage in more people helping.');
+Their thank-score will be raised which will hopefully encourage in more people helping.', '', $messageId);
     } else {
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId) {
