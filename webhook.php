@@ -149,11 +149,11 @@ You will have to register and can only receive free ZEN every 20 hours.');
     break;
   case '/thanks':
 
+    sendMessage($chatId, $repliedToUserId);
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.');
     } else {
-
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId) {
           //Connect to DB only here to save response time on other commands
