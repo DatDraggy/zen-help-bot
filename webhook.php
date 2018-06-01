@@ -191,7 +191,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
               $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
               $stmt = $dbConnection->prepare("UPDATE `thanks` SET `name`=:repliedToName, `username`=:repliedToUsername, `score`=`score`+1 WHERE user_id = :repliedToUserId");
               $stmt->bindParam(':repliedToName', $repliedToName);
-              $stmt->bindParam(':repliedToUserame', $repliedToUsername);
+              $stmt->bindParam(':repliedToUsername', $repliedToUsername);
               $stmt->bindParam(':repliedToUserId', $repliedToUserId);
               $stmt->execute();
             } catch (PDOException $e) {
