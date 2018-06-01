@@ -171,7 +171,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
           //Select
           try {
             $sql = "SELECT `user_id` FROM thanks WHERE user_id = '$repliedToUserId'";
-            $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = ':repliedToUserId'");
+            $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = :repliedToUserId");
             $stmt->bindParam(':repliedToUserId', $repliedToUserId);
             $stmt->execute();
             $row = $stmt->fetchAll();
