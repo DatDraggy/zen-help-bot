@@ -26,7 +26,7 @@ function getAdmins($chatId) {
   //Do things
   $result = '';
   $admins = json_decode($response, true)['result'];
-  foreach($admin in $admins){
+  foreach($admins as $admin){
     $is_bot = $admin['user']['is_bot'];
     $username = $admin['user']['username'];
     if(!empty($username) && empty($is_bot)){
