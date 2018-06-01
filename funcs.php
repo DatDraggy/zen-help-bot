@@ -38,7 +38,8 @@ function getAdmins($chatId) {
       //Replace username with first & last in future version?
       $result = $result . '<a href="https://t.me/' . $username . '">@' . $username . '</a>' . '
 ';
-      unset($admins[$admin]);
+      $adminKey = array_search($admin, $admins, true);
+      unset($admins[$adminKey]);
     }
   }
   return print_r($admins, true);
