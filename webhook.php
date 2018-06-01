@@ -168,9 +168,9 @@ Their thank-score will be raised which will hopefully encourage in more people h
           }
 
 
-          //Select
+          //Select where replied to userid, get score for convenience
           try {
-            $sql = "SELECT `user_id` FROM thanks WHERE user_id = '$repliedToUserId'";
+            $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
             $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = :repliedToUserId");
             $stmt->bindParam(':repliedToUserId', $repliedToUserId);
             $stmt->execute();
@@ -182,29 +182,40 @@ Their thank-score will be raised which will hopefully encourage in more people h
             $headers = 'From: ' . $config['mail'];
             mail($to, $subject, $txt, $headers);
           }
-          if(!empty($row)){
-            sendMessage($chatId, 'oh');
-          }
-          else{
-            sendMessage($chatId, 'what');
-          }
-          die();
-
-
-          //if not exist
-          try {
-            $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
-            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:useriedToUserId, :repliedToName, :repliedToUsername, '1')");
-            $stmt->bindParam(':useriedToUserId', $repliedToUserId);
-            $stmt->bindParam(':repliedToName', $repliedToName);
-            $stmt->bindParam(':repliedToUserame', $repliedToUsername);
-            $stmt->execute();
-          } catch (PDOException $e) {
-            $to = $config['mail'];
-            $subject = 'Database insert';
-            $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-            $headers = 'From: ' . $config['mail'];
-            mail($to, $subject, $txt, $headers);
+          if (!empty($row)) {
+            $score = $row['score'];
+            //Updating usernames and score+1
+            try {
+              $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
+              $stmt = $dbConnection->prepare("UPDATE `thanks` SET `name`=:repliedToName, `username`=:repliedToUsername, `score`=`score`+1 WHERE user_id = :repliedToUserId");
+              $stmt->bindParam(':repliedToName', $repliedToName);
+              $stmt->bindParam(':repliedToUserame', $repliedToUsername);
+              $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+              $stmt->execute();
+            } catch (PDOException $e) {
+              $to = $config['mail'];
+              $subject = 'Database insert';
+              $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+              $headers = 'From: ' . $config['mail'];
+              mail($to, $subject, $txt, $headers);
+            }
+          } else {
+            //if not exist, create entry
+            try {
+              $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
+              $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:useriedToUserId, :repliedToName, :repliedToUsername, '1')");
+              $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+              $stmt->bindParam(':repliedToName', $repliedToName);
+              $stmt->bindParam(':repliedToUserame', $repliedToUsername);
+              $stmt->execute();
+            } catch (PDOException $e) {
+              $to = $config['mail'];
+              $subject = 'Database insert';
+              $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+              $headers = 'From: ' . $config['mail'];
+              mail($to, $subject, $txt, $headers);
+            }
+            //sendMessage();
           }
           /* get replied to username and messageId
            * count + in database and update username + name
