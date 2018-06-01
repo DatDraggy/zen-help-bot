@@ -22,23 +22,41 @@ function getCurrentPrice() {
 
 function getAdmins($chatId) {
   global $config;
-  $response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id='.$chatId);
+  $response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id=' . $chatId);
   //Do things
   $result = '';
   $admins = json_decode($response, true)['result'];
-  foreach($admins as $admin){
+  foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
+    $firstName = $admin['user']['first_name'];
     $username = '';
-    if(isset($admin['user']['username'])) {
+    if (isset($admin['user']['username'])) {
       //Is there seriously nothing more elegant than this?
       $username = $admin['user']['username'];
     }
-    if(!empty($username) && empty($is_bot)){
+    if (!empty($username) && empty($is_bot)) {
       //Replace username with first & last in future version?
       $result = $result . '<a href="https://t.me/' . $username . '">@' . $username . '</a>' . '
+';
+      unset($admins[$admin]);
+    }
+    elseif (empty($is_bot)) {
+      $result = $result . $firstName . '
+';
+    }
+  }
+  foreach ($admins as $admin) {
+    $is_bot = $admin['user']['is_bot'];
+    $firstName = $admin['user']['first_name'];
+    $username = '';
+    //you kno, just to be sure >.>
+    if (isset($admin['user']['username'])) {
+      $username = $admin['user']['username'];
+    }
+    if (empty($username) && empty($is_bot)) {
+      $result = $result . $firstName . '
 ';
     }
   }
   return $result;
 }
-
