@@ -174,7 +174,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = :repliedToUserId");
             $stmt->bindParam(':repliedToUserId', $repliedToUserId);
             $stmt->execute();
-            $row = $stmt->fetchAll();
+            $row = $stmt->fetch();
           } catch (PDOException $e) {
             $to = $config['mail'];
             $subject = 'Database insert';
