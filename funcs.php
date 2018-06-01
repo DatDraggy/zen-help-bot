@@ -40,11 +40,8 @@ function getAdmins($chatId) {
 ';
       unset($admins[$admin]);
     }
-    elseif (empty($is_bot)) {
-      $result = $result . $firstName . '
-';
-    }
   }
+
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
