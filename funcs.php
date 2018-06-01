@@ -32,7 +32,7 @@ function getAdmins($chatId) {
       //Is there seriously nothing more elegant than this?
       $username = $admin['user']['username'];
     }
-    if(!empty($username) && empty($is_bot)){
+    if(isset($username) && empty($is_bot)){
       //Replace username with first & last in future version?
       $result = $result . '<a href="https://t.me/' . $username . '">@' . $username . '</a>' . '
 ';
