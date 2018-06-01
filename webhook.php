@@ -9,6 +9,7 @@ $dump = print_r($data, true);
 $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
+$senderUserId = $data['message']['from']['id'];
 if(isset($date['message']['reply_to_message'])){
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
@@ -16,6 +17,10 @@ if(isset($date['message']['reply_to_message'])){
   $repliedToName = $replyToMessage['from']['first_name'];
   if(isset($replyToMessage['from']['last_name'])){
     $repliedToName = $repliedToName . ' ' . $replyToMessage['from']['last_name'];
+  }
+  $repliedToUserame = NULL;
+  if(isset($replyToMessage['from']['username'])){
+    $repliedToUserame = $replyToMessage['from']['username'];
   }
 }
 
@@ -99,18 +104,8 @@ Here is a small list of available commands. Click them to find out what they say
 /freezen
 /helpdesk
 ');
-    }
-    else {
-      $replyMarkup = array(
-        'inline_keyboard' => array(
-          array(
-            array(
-              "text" => "/zencommands",
-              "url"  => "https://telegram.me/zencashhelp_bot?start=zencommands"
-            )
-          )
-        )
-      );
+    } else {
+      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
@@ -127,8 +122,7 @@ Click here to get a list of all commands:
 
 ';
       sendMessage($chatId, $adminText . getAdmins($chatId));
-    }
-    else {
+    } else {
       sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
     }
     break;
@@ -155,24 +149,71 @@ You will have to register and can only receive free ZEN every 20 hours.');
     break;
   case '/thanks':
 
-      if($chatType === 'private'){
-        sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
+    if ($chatType === 'private') {
+      sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.');
+    } else {
+
+      if (isset($repliedToMessageId)) {
+        if ($senderUserId !== $repliedToUserId) {
+          //Connect to DB only here to save response time on other commands
+          try {
+            $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword']);
+            $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+          } catch (PDOException $e) {
+            $to = $config['mail'];
+            $subject = 'Database Connect';
+            $txt = 'Error: ' . $e->getMessage();
+            $headers = 'From: ' . $config['mail'];
+            mail($to, $subject, $txt, $headers);
+          }
+
+
+          //Select
+          try {
+            $sql = "SELECT `user_id` FROM thanks WHERE user_id = '$repliedToUserId'";
+            $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = ':repliedToUserId'");
+            $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+            $stmt->execute();
+            $row = $stmt->fetch();
+          } catch (PDOException $e) {
+            $to = $config['mail'];
+            $subject = 'Database insert';
+            $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+            $headers = 'From: ' . $config['mail'];
+            mail($to, $subject, $txt, $headers);
+          }
+          mail($config['mail'], 'Test', print_r($row, true));
+          sendMessage($chatId, $repliedToUserId);
+          die();
+
+
+          //if not exist
+          try {
+            $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUserame', '1')";
+            $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (':useriedToUserId', ':repliedToName', ':repliedToUserame', '1')");
+            $stmt->bindParam(':useriedToUserId', $repliedToUserId);
+            $stmt->bindParam(':repliedToName', $repliedToName);
+            $stmt->bindParam(':repliedToUserame', $repliedToUserame);
+            $stmt->execute();
+          } catch (PDOException $e) {
+            $to = $config['mail'];
+            $subject = 'Database insert';
+            $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+            $headers = 'From: ' . $config['mail'];
+            mail($to, $subject, $txt, $headers);
+          }
+          /* get replied to username and messageId
+           * count + in database and update username + name
+           * select count
+           * sendReply($chatId, $messageId, 'Awesome! @\'s thank-score is now ' . $thankCount . ' thank-yous');
+           */
+        }
       }
-      else {
-        /*
-         * if(message is reply or $messageArr[1] has @){
-         * if(username is not replied_to username){
-         * get replied to username and messageId
-         * count + in database
-         * select count
-         * sendReply($chatId, $messageId, 'Awesome! @\'s thank-score is now ' . $thankCount . ' thank-yous');
-         * }
-         * }
-         */
-      }
+    }
     break;
-    case '/testdev':
+  case '/testdev':
     require_once('testdev.php');
     break;
   default:
