@@ -13,7 +13,7 @@ $message = $data['message']['text'];
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
   $command = $messageArr[0];
-  if($messageArr[1] == 'zencommands'){
+  if(isset($messageArr[1]) && $messageArr[1] == 'zencommands'){
     $command = '/zencommands';
   }
 }
