@@ -185,7 +185,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             mail($to, $subject, $txt, $headers);
           }
           if (!empty($row)) {
-            $score = $row['score'];
+            $score = $row['score'] + 1;
             //Updating usernames and score+1
             try {
               $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
@@ -202,6 +202,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
               mail($to, $subject, $txt, $headers);
             }
           } else {
+            $score = 1;
             //if not exist, create entry
             try {
               $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
@@ -219,11 +220,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             }
             //sendMessage();
           }
-          /* get replied to username and messageId
-           * count + in database and update username + name
-           * select count
-           * sendReply($chatId, $messageId, 'Awesome! @\'s thank-score is now ' . $thankCount . ' thank-yous');
-           */
+          sendMessage($chatId, 'Awesome! ' . $repliedToUsername . '\'s  thank-score is now ' . $score . ' points.');
         }
       }
     }

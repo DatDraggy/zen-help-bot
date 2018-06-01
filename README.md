@@ -5,5 +5,6 @@
 - [X] Zen helpdesk
 - [X] Zen faucet
 - [ ] How to mine
-- [ ] Thanks-rep system
+- [ ] Languages
+- [X] Thanks-rep system
 - [ ] Thanks scoreboard
