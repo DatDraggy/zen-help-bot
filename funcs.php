@@ -28,11 +28,12 @@ function getAdmins($chatId) {
   $admins = json_decode($response, true)['result'];
   foreach($admins as $admin){
     $is_bot = $admin['user']['is_bot'];
+    $username = '';
     if(isset($admin['user']['username'])) {
       //Is there seriously nothing more elegant than this?
       $username = $admin['user']['username'];
     }
-    if(isset($username) && empty($is_bot)){
+    if(!empty($username) && empty($is_bot)){
       //Replace username with first & last in future version?
       $result = $result . '<a href="https://t.me/' . $username . '">@' . $username . '</a>' . '
 ';
