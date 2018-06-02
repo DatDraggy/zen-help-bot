@@ -150,6 +150,7 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
     https://support.zencash.com', '', $messageId);
     break;
   case '/thanks':
+//ToDo: Move to function
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.', '', $messageId);
@@ -173,7 +174,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
           //Select where replied to userid, get score for convenience
           try {
             $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
-            $stmt = $dbConnection->prepare("SELECT `user_id` FROM thanks WHERE user_id = :repliedToUserId");
+            $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :repliedToUserId");
             $stmt->bindParam(':repliedToUserId', $repliedToUserId);
             $stmt->execute();
             $row = $stmt->fetch();
@@ -220,7 +221,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
             }
             //sendMessage();
           }
-          sendMessage($chatId, 'Awesome! ' . $repliedToUsername . '\'s  thank-score is now ' . $score . ' points.');
+          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s  thank-score is now ' . $score . '.');
         }
       }
     }
