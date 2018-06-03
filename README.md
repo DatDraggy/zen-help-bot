@@ -7,4 +7,5 @@
 - [ ] How to mine
 - [ ] Languages
 - [X] Thanks-rep system
+- [X] Get thanks
 - [ ] Thanks scoreboard

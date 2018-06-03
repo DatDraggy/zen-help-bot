@@ -105,6 +105,7 @@ Here is a small list of available commands. Click them to find out what they say
 /freezen
 /helpdesk
 /thanks
+/mythanks
 ', '', $messageId);
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -162,7 +163,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
       }
     }
     break;
-  case '/myscore':
+  case '/mythanks':
     if ($chatType === 'private') {
       $ownScore = getOwnThankScore($senderUserId);
       sendMessage($chatId, 'Your current thank-score is ' . $ownScore . '.');
