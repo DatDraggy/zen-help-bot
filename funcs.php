@@ -2,7 +2,7 @@
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
   global $config;
-  $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=".urlencode($text)."&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
+  $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
 }
 
@@ -58,6 +58,100 @@ function getAdmins($chatId) {
   return $result;
 }
 
-function buildMarkup($arrays) {
-  return 1;
+function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+
+  //Select where replied to userid, get score for convenience
+  try {
+    $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
+    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :repliedToUserId");
+    $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Select Score Count Score';
+    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  if (!empty($row)) {
+    $score = $row['score'] + 1;
+    //Updating usernames and score+1
+    try {
+      $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE `thanks` SET `name`=:repliedToName, `username`=:repliedToUsername, `score`=`score`+1 WHERE user_id = :repliedToUserId");
+      $stmt->bindParam(':repliedToName', $repliedToName);
+      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database update thank score';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+  } else {
+    $score = 1;
+    //if not exist, create entry
+    try {
+      $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
+      $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername, '1')");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->bindParam(':repliedToName', $repliedToName);
+      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database insert';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+    //sendMessage();
+  }
+  return $score;
+}
+
+function buildDatabaseConnection($config) {
+  //Connect to DB only here to save response time on other commands
+  try {
+    $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword']);
+    $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Connect';
+    $txt = 'Error: ' . $e->getMessage();
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  return $dbConnection;
+}
+
+function getOwnThankScore($senderUserId) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+
+  //Select where replied to userid, get score for convenience
+  try {
+    $sql = "SELECT `score` FROM thanks WHERE user_id = '$senderUserId'";
+    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :senderUserId");
+    $stmt->bindParam(':senderUserId', $senderUserId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Select ownScore';
+    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  $ownScore = 0;
+  if (!empty($row)) {
+    $ownScore = $row['score'];
+  }
+  return $ownScore;
 }

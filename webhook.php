@@ -11,16 +11,16 @@ $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
 $senderUserId = $data['message']['from']['id'];
-if(isset($data['message']['reply_to_message'])){
+if (isset($data['message']['reply_to_message'])) {
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
   $repliedToUserId = $replyToMessage['from']['id'];
   $repliedToName = $replyToMessage['from']['first_name'];
-  if(isset($replyToMessage['from']['last_name'])){
+  if (isset($replyToMessage['from']['last_name'])) {
     $repliedToName = $repliedToName . ' ' . $replyToMessage['from']['last_name'];
   }
   $repliedToUsername = NULL;
-  if(isset($replyToMessage['from']['username'])){
+  if (isset($replyToMessage['from']['username'])) {
     $repliedToUsername = $replyToMessage['from']['username'];
   }
 }
@@ -31,8 +31,7 @@ if (substr($message, '0', '1') == '/') {
   if (isset($messageArr[1]) && $messageArr[1] == 'zencommands') {
     $command = '/zencommands';
   }
-}
-else {
+} else {
   die();
 }
 
@@ -105,6 +104,7 @@ Here is a small list of available commands. Click them to find out what they say
 /wallets
 /freezen
 /helpdesk
+/thanks
 ', '', $messageId);
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -150,81 +150,26 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
     https://support.zencash.com', '', $messageId);
     break;
   case '/thanks':
-//ToDo: Move to function
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.', '', $messageId);
     } else {
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId) {
-          //Connect to DB only here to save response time on other commands
-          try {
-            $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword']);
-            $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-            $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-          } catch (PDOException $e) {
-            $to = $config['mail'];
-            $subject = 'Database Connect';
-            $txt = 'Error: ' . $e->getMessage();
-            $headers = 'From: ' . $config['mail'];
-            mail($to, $subject, $txt, $headers);
-          }
-
-
-          //Select where replied to userid, get score for convenience
-          try {
-            $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
-            $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :repliedToUserId");
-            $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-            $stmt->execute();
-            $row = $stmt->fetch();
-          } catch (PDOException $e) {
-            $to = $config['mail'];
-            $subject = 'Database insert';
-            $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-            $headers = 'From: ' . $config['mail'];
-            mail($to, $subject, $txt, $headers);
-          }
-          if (!empty($row)) {
-            $score = $row['score'] + 1;
-            //Updating usernames and score+1
-            try {
-              $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
-              $stmt = $dbConnection->prepare("UPDATE `thanks` SET `name`=:repliedToName, `username`=:repliedToUsername, `score`=`score`+1 WHERE user_id = :repliedToUserId");
-              $stmt->bindParam(':repliedToName', $repliedToName);
-              $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-              $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-              $stmt->execute();
-            } catch (PDOException $e) {
-              $to = $config['mail'];
-              $subject = 'Database insert';
-              $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-              $headers = 'From: ' . $config['mail'];
-              mail($to, $subject, $txt, $headers);
-            }
-          } else {
-            $score = 1;
-            //if not exist, create entry
-            try {
-              $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
-              $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername, '1')");
-              $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-              $stmt->bindParam(':repliedToName', $repliedToName);
-              $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-              $stmt->execute();
-            } catch (PDOException $e) {
-              $to = $config['mail'];
-              $subject = 'Database insert';
-              $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-              $headers = 'From: ' . $config['mail'];
-              mail($to, $subject, $txt, $headers);
-            }
-            //sendMessage();
-          }
-          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s  thank-score is now ' . $score . '.');
+          $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
+          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s  thank-score is now ' . $newScore . '.');
         }
       }
     }
+    break;
+  case '/myscore':
+    if ($chatType === 'private') {
+      $ownScore = getOwnThankScore($senderUserId);
+      sendMessage($chatId, 'Your current thank-score is ' . $ownScore . '.');
+      //ToDo: Add Scoreboard Position
+    }
+    break;
+  case '/scoreboard':
     break;
   case '/testdev':
     require_once('testdev.php');
