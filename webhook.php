@@ -174,6 +174,12 @@ Their thank-score will be raised which will hopefully encourage in more people h
     }
     break;
   case '/scoreboard':
+    if($chatType === 'private') {
+      $scoreboard = getScoreboard();
+      sendMessage($chatId, 'These are the top 3 people with the most thanks received: 
+      
+      ' . $scoreboard);
+    }
     break;
   case '/zengroups':
     sendMessage($chatId, 'Here is a list of all official chats: 

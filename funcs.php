@@ -155,3 +155,27 @@ function getOwnThankScore($senderUserId) {
   }
   return $ownScore;
 }
+
+function getScoreboard() {
+  $scoreboard = '';
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = 'SELECT `name`, `username`, `score` FROM thanks ORDER BY score DESC LIMIT 3';
+    foreach ($dbConnection->query($sql) as $row) {
+      if (empty($row['username'])) {
+        $scoreboard .= $row['name'] . ': ' . $row['score'];
+      }
+      else {
+        $scoreboard .= '@' . $row['username'] . ': ' . $row['score'];
+      }
+    }
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Select ownScore';
+    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  return $scoreboard;
+}
