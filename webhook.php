@@ -173,6 +173,8 @@ Their thank-score will be raised which will hopefully encourage in more people h
       //ToDo: Add Scoreboard Position
     }
     break;
+  case '/myaddress':
+    break;
   case '/scoreboard':
     if($chatType === 'private') {
       $scoreboard = getScoreboard();
