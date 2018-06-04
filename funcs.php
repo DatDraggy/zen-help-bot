@@ -1,4 +1,8 @@
 <?php
+
+$infos['groups'] = 'English: @ZenCash
+';
+
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
   global $config;

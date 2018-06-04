@@ -9,3 +9,4 @@
 - [X] Thanks-rep system
 - [X] Get thanks
 - [ ] Thanks scoreboard
+- [ ] /community: Discord twitter etc
