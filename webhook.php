@@ -108,6 +108,7 @@ Here is a small list of available commands. Click them to find out what they say
 /freezen
 /helpdesk
 /thanks
+/scoreboard
 /mythanks
 ');
     } else {
