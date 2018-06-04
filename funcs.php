@@ -82,6 +82,18 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     try {
       $sql = "UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
       $stmt = $dbConnection->prepare("UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = :repliedToUserId");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database update thank score';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+    try {
+      $sql = "UPDATE `users` SET `name`='$repliedToName', `username`='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE `users` SET `name`=:repliedToName, `username`=:repliedToUsername WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
@@ -93,19 +105,6 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $headers = 'From: ' . $config['mail'];
       mail($to, $subject, $txt, $headers);
     }
-    try{
-      $sql = "UPDATE `users` SET `name`='$repliedToName', `username`='$repliedToUsername' WHERE user_id = '$repliedToUserId'";$stmt = $dbConnection->prepare("UPDATE `users` SET `name`=:repliedToName, `username`=:repliedToUsername WHERE user_id = :repliedToUserId");
-    $stmt->bindParam(':repliedToName', $repliedToName);
-    $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-    $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-    $stmt->execute();
-  } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database update thank score';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
-  }
   } else {
     $score = 1;
     //if not exist, create entry
@@ -120,7 +119,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
       $headers = 'From: ' . $config['mail'];
       mail($to, $subject, $txt, $headers);
-    }try {
+    }
+    try {
       $sql = "INSERT INTO `users`(`user_id`, `name`, `username`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
       $stmt = $dbConnection->prepare("INSERT INTO `users`(`user_id`, `name`, `username`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
