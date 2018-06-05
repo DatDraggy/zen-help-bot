@@ -108,6 +108,7 @@ Here is a small list of available commands. Click them to find out what they say
 /freezen
 /helpdesk
 /thanks
+/scoreboard
 /mythanks
 ');
     } else {
@@ -156,12 +157,12 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
   case '/thanks':
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
-Their thank-score will be raised which will hopefully encourage in more people helping.', '', $messageId);
+Their thank-score will be raised which will hopefully encourage in more people helping.');
     } else {
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
-          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s  thank-score is now ' . $newScore . '.');
+          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
         }
       }
     }
@@ -173,12 +174,14 @@ Their thank-score will be raised which will hopefully encourage in more people h
       //ToDo: Add Scoreboard Position
     }
     break;
+  case '/myaddress':
+    break;
   case '/scoreboard':
     if($chatType === 'private') {
       $scoreboard = getScoreboard();
       sendMessage($chatId, 'These are the top 3 people with the most thanks received: 
       
-      ' . $scoreboard);
+' . $scoreboard);
     }
     break;
   case '/zengroups':

@@ -80,8 +80,20 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     $score = $row['score'] + 1;
     //Updating usernames and score+1
     try {
-      $sql = "UPDATE `thanks` SET `name`='$repliedToName', `username`='$repliedToUsername', `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE `thanks` SET `name`=:repliedToName, `username`=:repliedToUsername, `score`=`score`+1 WHERE user_id = :repliedToUserId");
+      $sql = "UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = :repliedToUserId");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database update thank score';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+    try {
+      $sql = "UPDATE `users` SET `name`='$repliedToName', `username`='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE `users` SET `name`=:repliedToName, `username`=:repliedToUsername WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
@@ -97,8 +109,20 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     $score = 1;
     //if not exist, create entry
     try {
-      $sql = "INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
-      $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `name`, `username`, `score`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername, '1')");
+      $sql = "INSERT INTO `thanks`(`user_id`, `score`) VALUES ('$repliedToUserId', '1')";
+      $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `score`) VALUES (:repliedToUserId, '1')");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database insert';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+    try {
+      $sql = "INSERT INTO `users`(`user_id`, `name`, `username`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
+      $stmt = $dbConnection->prepare("INSERT INTO `users`(`user_id`, `name`, `username`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
@@ -161,12 +185,11 @@ function getScoreboard() {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = 'SELECT `name`, `username`, `score` FROM thanks ORDER BY score DESC LIMIT 3';
+    $sql = 'SELECT `name`, `username`, `score` FROM `users` INNER JOIN `thanks` ON `thanks`.`user_id` = `users`.`user_id` ORDER BY score DESC LIMIT 3';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
         $scoreboard .= $row['name'] . ': ' . $row['score'];
-      }
-      else {
+      } else {
         $scoreboard .= '@' . $row['username'] . ': ' . $row['score'];
       }
     }

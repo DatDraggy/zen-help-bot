@@ -7,6 +7,7 @@
 - [ ] How to mine
 - [ ] zengroups Languages
 - [X] Thanks-rep system
+- [X] Add thanks address
 - [X] Get thanks
 - [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
