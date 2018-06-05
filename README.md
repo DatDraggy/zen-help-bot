@@ -8,5 +8,5 @@
 - [ ] zengroups Languages
 - [X] Thanks-rep system
 - [X] Get thanks
-- [ ] Thanks scoreboard
+- [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
