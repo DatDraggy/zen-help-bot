@@ -187,9 +187,12 @@ Their thank-score will be raised which will hopefully encourage in more people h
       if(empty($messageArr[1])){
         sendMessage($chatId, 'No Address supplied. Use <code>/myaddress t_addr</code>');
       }
-      else{
+      else if(strlen($messageArr[1]) === 35){
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
         sendMessage($chatId, 'Your address has been set to '.$messageArr[1]);
+      }
+      else{
+        sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');
       }
 
     }
