@@ -58,6 +58,25 @@ function getAdmins($chatId) {
   return $result;
 }
 
+function buildDatabaseConnection($config) {
+  //Connect to DB only here to save response time on other commands
+  try {
+    $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword']);
+    $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+  } catch (PDOException $e) {
+    pdoException('Database Insert', $config, '', $e);
+  }
+  return $dbConnection;
+}
+
+function pdoException($subject, $config, $sql='', $e) {
+  $to = $config['mail'];
+  $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+  $headers = 'From: ' . $config['mail'];
+  mail($to, $subject, $txt, $headers);
+}
+
 function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
@@ -70,11 +89,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select Score Count Score';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   if (!empty($row)) {
     $score = $row['score'] + 1;
@@ -85,11 +100,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database update thank score';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Update', $config, $sql, $e);
     }
     try {
       $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
@@ -99,11 +110,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database update thank score';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Update', $config, $sql, $e);
     }
   } else {
     $score = 1;
@@ -114,11 +121,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Update', $config, $sql, $e);
     }
     try {
       $sql = "INSERT INTO users(user_id, name, username) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
@@ -128,32 +131,13 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Update', $config, $sql, $e);
     }
     //sendMessage();
   }
   return $score;
 }
 
-function buildDatabaseConnection($config) {
-  //Connect to DB only here to save response time on other commands
-  try {
-    $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword']);
-    $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-    $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Connect';
-    $txt = 'Error: ' . $e->getMessage();
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
-  }
-  return $dbConnection;
-}
 
 function getOwnThankScore($senderUserId) {
   global $config;
@@ -167,11 +151,7 @@ function getOwnThankScore($senderUserId) {
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select ownScore';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   $ownScore = 0;
   if (!empty($row)) {
@@ -194,11 +174,7 @@ function getScoreboard() {
       }
     }
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select ownScore';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   return $scoreboard;
 }
@@ -213,11 +189,7 @@ function addUserAddress($userId, $address, $name, $username) {
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select user id';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   if (!empty($row)) {
     try {
@@ -227,11 +199,7 @@ function addUserAddress($userId, $address, $name, $username) {
       $stmt->bindParam(':userId', $userId);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database Select ownScore';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Update', $config, $sql, $e);
     }
   }
   else {
@@ -244,11 +212,7 @@ function addUserAddress($userId, $address, $name, $username) {
       $stmt->bindParam(':address', $address);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database Insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Insert', $config, $sql, $e);
     }
     try {
       $sql = "INSERT INTO thanks(user_id) VALUES ('$userId')";
@@ -256,11 +220,7 @@ function addUserAddress($userId, $address, $name, $username) {
       $stmt->bindParam(':userId', $userId);
       $stmt->execute();
     } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database Insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
+      pdoException('Database Insert', $config, $sql, $e);
     }
   }
 }
@@ -275,11 +235,7 @@ function getUserAddress($userId){
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select address';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   $address = '';
   if (!empty($row)) {
