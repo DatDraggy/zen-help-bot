@@ -1,5 +1,5 @@
 ### ToDo List
-- [ ] # Clean up database queries
+- [ ] Clean up database queries
 - [ ] securenodesreward: Calculate weekly, monthly
 - [X] zenadmins
 - [X] Wallet types
