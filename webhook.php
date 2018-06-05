@@ -118,6 +118,7 @@ Here is a small list of available commands. Click them to find out what they say
 /thanks
 /scoreboard
 /mythanks
+/myaddress
 ');
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -186,7 +187,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
     if ($chatType === 'private'){
       if(empty($messageArr[1])){
         $address = getUserAddress($senderUserId);
-        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code>.';
+        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers.';
         if(!empty($address)){
           $messageToSend .= '
           
