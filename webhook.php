@@ -185,7 +185,14 @@ Their thank-score will be raised which will hopefully encourage in more people h
   case '/myaddress':
     if ($chatType === 'private'){
       if(empty($messageArr[1])){
-        sendMessage($chatId, 'No Address supplied. Use <code>/myaddress t_addr</code>');
+        $address = getUserAddress($senderUserId);
+        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code>.';
+        if(!empty($address)){
+          $messageToSend .= '
+          
+Your current address is '.$address;
+        }
+        sendMessage($chatId, $messageToSend);
       }
       else if(strlen($messageArr[1]) === 35){
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);

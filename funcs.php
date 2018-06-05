@@ -264,3 +264,26 @@ function addUserAddress($userId, $address, $name, $username) {
     }
   }
 }
+
+function getUserAddress($userId){
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT address FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Select address';
+    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  $address = '';
+  if (!empty($row)) {
+    $address = $row['address'];
+  }
+  return $address;
+}
