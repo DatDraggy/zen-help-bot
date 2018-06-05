@@ -169,9 +169,11 @@ function getScoreboard() {
     $sql = 'SELECT name, username, score FROM users INNER JOIN thanks ON thanks.user_id = users.user_id ORDER BY score DESC LIMIT 3';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
-        $scoreboard .= $row['name'] . ': ' . $row['score'];
+        $scoreboard .= '
+        '.$row['name'] . ': ' . $row['score'];
       } else {
-        $scoreboard .= '@' . $row['username'] . ': ' . $row['score'];
+        $scoreboard .= '
+        @' . $row['username'] . ': ' . $row['score'];
       }
     }
   } catch (PDOException $e) {
