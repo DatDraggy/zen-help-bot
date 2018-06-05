@@ -15,7 +15,7 @@ $messageIdToReplyTo = $messageId;
 $senderUserId = $data['message']['from']['id'];
 $senderName = $data['message']['from']['first_name'];
 if (isset($replyToMessage['from']['last_name'])) {
-  $senderName = $senderName . ' ' . $data['message']['from']['last_name'];
+  $senderName .= ' ' . $data['message']['from']['last_name'];
 }
 $senderUsername = NULL;
 if (isset($data['message']['from']['username'])) {
@@ -119,6 +119,7 @@ Here is a small list of available commands. Click them to find out what they say
 /scoreboard
 /mythanks
 /myaddress
+/51
 ');
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -218,6 +219,9 @@ Your current address is '.$address;
 
 ' . $infos['groups']);
     break;
+  case '/51':
+    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
+    break;
   case '/community':
     break;
   case '/testdev':
@@ -225,6 +229,6 @@ Your current address is '.$address;
     break;
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.', '', $messageId);
+      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.');
     }
 }
