@@ -13,6 +13,14 @@ $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
 $messageIdToReplyTo = $messageId;
 $senderUserId = $data['message']['from']['id'];
+$senderName = $data['message']['from']['first_name'];
+if (isset($replyToMessage['from']['last_name'])) {
+  $senderName = $senderName . ' ' . $data['message']['from']['last_name'];
+}
+$senderUsername = NULL;
+if (isset($data['message']['from']['username'])) {
+  $senderUsername = $data['message']['from']['username'];
+}
 if (isset($data['message']['reply_to_message'])) {
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
@@ -175,6 +183,16 @@ Their thank-score will be raised which will hopefully encourage in more people h
     }
     break;
   case '/myaddress':
+    if ($chatType === 'private'){
+      if(empty($messageArr[1])){
+        sendMessage($chatId, 'No Address supplied. Use <code>/myaddress t_addr</code>');
+      }
+      else{
+        addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
+        sendMessage($chatId, 'Your address has been set to '.$messageArr[1]);
+      }
+
+    }
     break;
   case '/scoreboard':
     if($chatType === 'private') {

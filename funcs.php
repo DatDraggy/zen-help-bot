@@ -64,8 +64,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
 
   //Select where replied to userid, get score for convenience
   try {
-    $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
-    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :repliedToUserId");
+    $sql = "SELECT score FROM thanks WHERE user_id = '$repliedToUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :repliedToUserId");
     $stmt->bindParam(':repliedToUserId', $repliedToUserId);
     $stmt->execute();
     $row = $stmt->fetch();
@@ -80,8 +80,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     $score = $row['score'] + 1;
     //Updating usernames and score+1
     try {
-      $sql = "UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = :repliedToUserId");
+      $sql = "UPDATE thanks SET score=score+1 WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE thanks SET score=score+1 WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
@@ -92,8 +92,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       mail($to, $subject, $txt, $headers);
     }
     try {
-      $sql = "UPDATE `users` SET `name`='$repliedToName', `username`='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE `users` SET `name`=:repliedToName, `username`=:repliedToUsername WHERE user_id = :repliedToUserId");
+      $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET name=:repliedToName, username=:repliedToUsername WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
@@ -109,8 +109,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     $score = 1;
     //if not exist, create entry
     try {
-      $sql = "INSERT INTO `thanks`(`user_id`, `score`) VALUES ('$repliedToUserId', '1')";
-      $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `score`) VALUES (:repliedToUserId, '1')");
+      $sql = "INSERT INTO thanks(user_id, score) VALUES ('$repliedToUserId', '1')";
+      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id, score) VALUES (:repliedToUserId, '1')");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
@@ -121,8 +121,8 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       mail($to, $subject, $txt, $headers);
     }
     try {
-      $sql = "INSERT INTO `users`(`user_id`, `name`, `username`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
-      $stmt = $dbConnection->prepare("INSERT INTO `users`(`user_id`, `name`, `username`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
+      $sql = "INSERT INTO users(user_id, name, username) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
@@ -161,8 +161,8 @@ function getOwnThankScore($senderUserId) {
 
   //Select where replied to userid, get score for convenience
   try {
-    $sql = "SELECT `score` FROM thanks WHERE user_id = '$senderUserId'";
-    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :senderUserId");
+    $sql = "SELECT score FROM thanks WHERE user_id = '$senderUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :senderUserId");
     $stmt->bindParam(':senderUserId', $senderUserId);
     $stmt->execute();
     $row = $stmt->fetch();
@@ -185,7 +185,7 @@ function getScoreboard() {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = 'SELECT `name`, `username`, `score` FROM `users` INNER JOIN `thanks` ON `thanks`.`user_id` = `users`.`user_id` ORDER BY score DESC LIMIT 3';
+    $sql = 'SELECT name, username, score FROM users INNER JOIN thanks ON thanks.user_id = users.user_id ORDER BY score DESC LIMIT 3';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
         $scoreboard .= $row['name'] . ': ' . $row['score'];
@@ -201,4 +201,66 @@ function getScoreboard() {
     mail($to, $subject, $txt, $headers);
   }
   return $scoreboard;
+}
+
+function addUserAddress($userId, $address, $name, $username) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT user_id FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT user_id FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    $to = $config['mail'];
+    $subject = 'Database Select user id';
+    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+    $headers = 'From: ' . $config['mail'];
+    mail($to, $subject, $txt, $headers);
+  }
+  if (!empty($row)) {
+    try {
+      $sql = "UPDATE users SET address = '$address' WHERE user_id = '$userId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET address = :address WHERE user_id = :userId");
+      $stmt->bindParam(':address', $address);
+      $stmt->bindParam(':userId', $userId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database Select ownScore';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+  }
+  else {
+    try {
+      $sql = "INSERT INTO users(user_id, name, username, address) VALUES ('$userId', '$name', '$username', '$address')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username, address) VALUES (:userId, :name, :username, :address)");
+      $stmt->bindParam(':userId', $userId);
+      $stmt->bindParam(':name', $name);
+      $stmt->bindParam(':username', $username);
+      $stmt->bindParam(':address', $address);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database Insert';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+    try {
+      $sql = "INSERT INTO thanks(user_id) VALUES ('$userId')";
+      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id) VALUES (:userId)");
+      $stmt->bindParam(':userId', $userId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      $to = $config['mail'];
+      $subject = 'Database Insert';
+      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+      $headers = 'From: ' . $config['mail'];
+      mail($to, $subject, $txt, $headers);
+    }
+  }
 }
