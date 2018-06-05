@@ -112,6 +112,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     } catch (PDOException $e) {
       pdoException('Database Update', $config, $sql, $e);
     }
+    zlog(__FUNCTION__, 'Updated user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
   } else {
     $score = 1;
     //if not exist, create entry
@@ -133,7 +134,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     } catch (PDOException $e) {
       pdoException('Database Update', $config, $sql, $e);
     }
-    //sendMessage();
+    zlog(__FUNCTION__, 'Inserted user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
   }
   return $score;
 }
@@ -201,6 +202,7 @@ function addUserAddress($userId, $address, $name, $username) {
     } catch (PDOException $e) {
       pdoException('Database Update', $config, $sql, $e);
     }
+    zlog(__FUNCTION__, 'Updated user ' . substr($userId, '0', strlen($userId) - 3));
   }
   else {
     try {
@@ -222,6 +224,7 @@ function addUserAddress($userId, $address, $name, $username) {
     } catch (PDOException $e) {
       pdoException('Database Insert', $config, $sql, $e);
     }
+    zlog(__FUNCTION__, 'Inserted user ' . substr($userId, '0', strlen($userId) - 3));
   }
 }
 
@@ -242,4 +245,9 @@ function getUserAddress($userId){
     $address = $row['address'];
   }
   return $address;
+}
+
+function zlog($func, $data) {
+  $putData = '[' . date("Y-m-d H:i:s") . '] ' .$func . ': '. $data;
+  file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
 }

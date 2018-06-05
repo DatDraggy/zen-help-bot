@@ -139,7 +139,7 @@ Click here to get a list of all commands:
 ';
       sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageIdToReplyTo);
     } else {
-      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉', '', $messageIdToReplyTo);
+      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
     }
     break;
   case '/wallets':
@@ -172,6 +172,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
         if ($senderUserId !== $repliedToUserId) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
           sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
+          zlog('/thanks', 'Added thanks to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
         }
       }
     }
@@ -198,11 +199,11 @@ Your current address is '.$address;
       else if(strlen($messageArr[1]) === 35){
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
         sendMessage($chatId, 'Your address has been set to '.$messageArr[1]);
+        zlog('/myaddress', 'Added address to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
       }
       else{
         sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');
       }
-
     }
     break;
   case '/scoreboard':
