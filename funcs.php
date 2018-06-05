@@ -170,10 +170,10 @@ function getScoreboard() {
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
         $scoreboard .= '
-        '.$row['name'] . ': ' . $row['score'];
+'.$row['name'] . ': ' . $row['score'];
       } else {
         $scoreboard .= '
-        @' . $row['username'] . ': ' . $row['score'];
+@' . $row['username'] . ': ' . $row['score'];
       }
     }
   } catch (PDOException $e) {
