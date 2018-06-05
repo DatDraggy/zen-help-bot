@@ -169,7 +169,7 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
 Their thank-score will be raised which will hopefully encourage in more people helping.');
     } else {
       if (isset($repliedToMessageId)) {
-        if ($senderUserId !== $repliedToUserId) {
+        if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
           sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
           zlog('/thanks', 'Added thanks to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
