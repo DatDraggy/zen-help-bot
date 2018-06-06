@@ -12,3 +12,4 @@
 - [X] Get thanks
 - [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
+- [ ] Roi calculator

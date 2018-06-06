@@ -64,7 +64,7 @@ I am also open source, so if you like you can add your own commands by creating 
   case '/zenprice':
     sendMessage($chatId, getCurrentPrice() . '
 
-<code>Source: Bittrex</code>', '', $messageIdToReplyTo);
+<code>Source: Bittrex, Coinmarketcap</code>', '', $messageIdToReplyTo);
     break;
 
   case '/nodes':
@@ -121,6 +121,7 @@ Here is a small list of available commands. Click them to find out what they say
 /mythanks
 /myaddress
 /51
+/roi
 ');
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -224,6 +225,8 @@ Your current address is '.$address;
     sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
     break;
   case '/community':
+    break;
+  case '/roi':
     break;
   case '/testdev':
     require_once('testdev.php');

@@ -22,11 +22,14 @@ Reward per Year: $estEarnYearly";
 }
 
 function getCurrentPrice() {
+  $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
   $bittrexJson = file_get_contents('https://bittrex.com/Api/v2.0/pub/market/GetMarketSummary?marketName=BTC-ZEN');
-  $prices = json_decode($bittrexJson, true);
-  return 'Last ZenCash price: ' . number_format($prices['result']['Last'], 8) . '
-24h High: ' . number_format($prices['result']['High'], 8) . '
-24h Low: ' . number_format($prices['result']['Low'], 8);
+  $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
+  $pricesBittrex = json_decode($bittrexJson, true);
+  return 'Last ZenCash price: ' . number_format($pricesBittrex['result']['Last'], 8) . '
+24h High: ' . number_format($pricesBittrex['result']['High'], 8) . '
+24h Low: ' . number_format($pricesBittrex['result']['Low'], 8) . '
+Price in Dollars: ' . number_format($pricesCoinmarket['price_usd'], 2);
 }
 
 function getAdmins($chatId) {
