@@ -13,6 +13,14 @@ $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
 $messageIdToReplyTo = $messageId;
 $senderUserId = $data['message']['from']['id'];
+$senderName = $data['message']['from']['first_name'];
+if (isset($replyToMessage['from']['last_name'])) {
+  $senderName .= ' ' . $data['message']['from']['last_name'];
+}
+$senderUsername = NULL;
+if (isset($data['message']['from']['username'])) {
+  $senderUsername = $data['message']['from']['username'];
+}
 if (isset($data['message']['reply_to_message'])) {
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
@@ -109,7 +117,10 @@ Here is a small list of available commands. Click them to find out what they say
 /freezen
 /helpdesk
 /thanks
+/scoreboard
 /mythanks
+/myaddress
+/51
 ');
     } else {
       $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
@@ -130,7 +141,7 @@ Click here to get a list of all commands:
 ';
       sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageIdToReplyTo);
     } else {
-      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉', '', $messageIdToReplyTo);
+      sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
     }
     break;
   case '/wallets':
@@ -160,9 +171,10 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
 Their thank-score will be raised which will hopefully encourage in more people helping.');
     } else {
       if (isset($repliedToMessageId)) {
-        if ($senderUserId !== $repliedToUserId) {
+        if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
           sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
+          zlog('/thanks', 'Added thanks to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
         }
       }
     }
@@ -175,12 +187,31 @@ Their thank-score will be raised which will hopefully encourage in more people h
     }
     break;
   case '/myaddress':
+    if ($chatType === 'private'){
+      if(empty($messageArr[1])){
+        $address = getUserAddress($senderUserId);
+        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers.';
+        if(!empty($address)){
+          $messageToSend .= '
+          
+Your current address is '.$address;
+        }
+        sendMessage($chatId, $messageToSend);
+      }
+      else if(strlen($messageArr[1]) === 35){
+        addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
+        sendMessage($chatId, 'Your address has been set to '.$messageArr[1]);
+        zlog('/myaddress', 'Added address to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
+      }
+      else{
+        sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');
+      }
+    }
     break;
   case '/scoreboard':
     if($chatType === 'private') {
       $scoreboard = getScoreboard();
-      sendMessage($chatId, 'These are the top 3 people with the most thanks received: 
-      
+      sendMessage($chatId, 'These are the top 3 people with the most thanks received:
 ' . $scoreboard);
     }
     break;
@@ -189,6 +220,9 @@ Their thank-score will be raised which will hopefully encourage in more people h
 
 ' . $infos['groups']);
     break;
+  case '/51':
+    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
+    break;
   case '/community':
     break;
   case '/testdev':
@@ -196,6 +230,6 @@ Their thank-score will be raised which will hopefully encourage in more people h
     break;
   default:
     if ($chatType === 'private') {
-      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.', '', $messageId);
+      sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.');
     }
 }

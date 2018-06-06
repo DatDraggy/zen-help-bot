@@ -63,87 +63,6 @@ function getAdmins($chatId) {
   return $result;
 }
 
-function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
-  global $config;
-  $dbConnection = buildDatabaseConnection($config);
-
-  //Select where replied to userid, get score for convenience
-  try {
-    $sql = "SELECT `score` FROM thanks WHERE user_id = '$repliedToUserId'";
-    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :repliedToUserId");
-    $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-    $stmt->execute();
-    $row = $stmt->fetch();
-  } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select Score Count Score';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
-  }
-  if (!empty($row)) {
-    $score = $row['score'] + 1;
-    //Updating usernames and score+1
-    try {
-      $sql = "UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE `thanks` SET `score`=`score`+1 WHERE user_id = :repliedToUserId");
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database update thank score';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
-    }
-    try {
-      $sql = "UPDATE `users` SET `name`='$repliedToName', `username`='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE `users` SET `name`=:repliedToName, `username`=:repliedToUsername WHERE user_id = :repliedToUserId");
-      $stmt->bindParam(':repliedToName', $repliedToName);
-      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database update thank score';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
-    }
-  } else {
-    $score = 1;
-    //if not exist, create entry
-    try {
-      $sql = "INSERT INTO `thanks`(`user_id`, `score`) VALUES ('$repliedToUserId', '1')";
-      $stmt = $dbConnection->prepare("INSERT INTO `thanks`(`user_id`, `score`) VALUES (:repliedToUserId, '1')");
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
-    }
-    try {
-      $sql = "INSERT INTO `users`(`user_id`, `name`, `username`) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
-      $stmt = $dbConnection->prepare("INSERT INTO `users`(`user_id`, `name`, `username`) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->bindParam(':repliedToName', $repliedToName);
-      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      $to = $config['mail'];
-      $subject = 'Database insert';
-      $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-      $headers = 'From: ' . $config['mail'];
-      mail($to, $subject, $txt, $headers);
-    }
-    //sendMessage();
-  }
-  return $score;
-}
-
 function buildDatabaseConnection($config) {
   //Connect to DB only here to save response time on other commands
   try {
@@ -151,14 +70,80 @@ function buildDatabaseConnection($config) {
     $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Connect';
-    $txt = 'Error: ' . $e->getMessage();
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Insert', $config, '', $e);
   }
   return $dbConnection;
 }
+
+function pdoException($subject, $config, $sql='', $e) {
+  $to = $config['mail'];
+  $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
+  $headers = 'From: ' . $config['mail'];
+  mail($to, $subject, $txt, $headers);
+}
+
+function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+
+  //Select where replied to userid, get score for convenience
+  try {
+    $sql = "SELECT score FROM thanks WHERE user_id = '$repliedToUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :repliedToUserId");
+    $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    pdoException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row)) {
+    $score = $row['score'] + 1;
+    //Updating usernames and score+1
+    try {
+      $sql = "UPDATE thanks SET score=score+1 WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE thanks SET score=score+1 WHERE user_id = :repliedToUserId");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Update', $config, $sql, $e);
+    }
+    try {
+      $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET name=:repliedToName, username=:repliedToUsername WHERE user_id = :repliedToUserId");
+      $stmt->bindParam(':repliedToName', $repliedToName);
+      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Update', $config, $sql, $e);
+    }
+    zlog(__FUNCTION__, 'Updated user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
+  } else {
+    $score = 1;
+    //if not exist, create entry
+    try {
+      $sql = "INSERT INTO thanks(user_id, score) VALUES ('$repliedToUserId', '1')";
+      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id, score) VALUES (:repliedToUserId, '1')");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Update', $config, $sql, $e);
+    }
+    try {
+      $sql = "INSERT INTO users(user_id, name, username) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
+      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
+      $stmt->bindParam(':repliedToName', $repliedToName);
+      $stmt->bindParam(':repliedToUsername', $repliedToUsername);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Update', $config, $sql, $e);
+    }
+    zlog(__FUNCTION__, 'Inserted user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
+  }
+  return $score;
+}
+
 
 function getOwnThankScore($senderUserId) {
   global $config;
@@ -166,17 +151,13 @@ function getOwnThankScore($senderUserId) {
 
   //Select where replied to userid, get score for convenience
   try {
-    $sql = "SELECT `score` FROM thanks WHERE user_id = '$senderUserId'";
-    $stmt = $dbConnection->prepare("SELECT `score` FROM thanks WHERE user_id = :senderUserId");
+    $sql = "SELECT score FROM thanks WHERE user_id = '$senderUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :senderUserId");
     $stmt->bindParam(':senderUserId', $senderUserId);
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select ownScore';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   $ownScore = 0;
   if (!empty($row)) {
@@ -190,20 +171,90 @@ function getScoreboard() {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = 'SELECT `name`, `username`, `score` FROM `users` INNER JOIN `thanks` ON `thanks`.`user_id` = `users`.`user_id` ORDER BY score DESC LIMIT 3';
+    $sql = 'SELECT name, username, score FROM users INNER JOIN thanks ON thanks.user_id = users.user_id ORDER BY score DESC LIMIT 3';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
-        $scoreboard .= $row['name'] . ': ' . $row['score'];
+        $scoreboard .= '
+'.$row['name'] . ': ' . $row['score'];
       } else {
-        $scoreboard .= '@' . $row['username'] . ': ' . $row['score'];
+        $scoreboard .= '
+@' . $row['username'] . ': ' . $row['score'];
       }
     }
   } catch (PDOException $e) {
-    $to = $config['mail'];
-    $subject = 'Database Select ownScore';
-    $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
-    $headers = 'From: ' . $config['mail'];
-    mail($to, $subject, $txt, $headers);
+    pdoException('Database Select', $config, $sql, $e);
   }
   return $scoreboard;
+}
+
+function addUserAddress($userId, $address, $name, $username) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT user_id FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT user_id FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    pdoException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row)) {
+    try {
+      $sql = "UPDATE users SET address = '$address' WHERE user_id = '$userId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET address = :address WHERE user_id = :userId");
+      $stmt->bindParam(':address', $address);
+      $stmt->bindParam(':userId', $userId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Update', $config, $sql, $e);
+    }
+    zlog(__FUNCTION__, 'Updated user ' . substr($userId, '0', strlen($userId) - 3));
+  }
+  else {
+    try {
+      $sql = "INSERT INTO users(user_id, name, username, address) VALUES ('$userId', '$name', '$username', '$address')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username, address) VALUES (:userId, :name, :username, :address)");
+      $stmt->bindParam(':userId', $userId);
+      $stmt->bindParam(':name', $name);
+      $stmt->bindParam(':username', $username);
+      $stmt->bindParam(':address', $address);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Insert', $config, $sql, $e);
+    }
+    try {
+      $sql = "INSERT INTO thanks(user_id) VALUES ('$userId')";
+      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id) VALUES (:userId)");
+      $stmt->bindParam(':userId', $userId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      pdoException('Database Insert', $config, $sql, $e);
+    }
+    zlog(__FUNCTION__, 'Inserted user ' . substr($userId, '0', strlen($userId) - 3));
+  }
+}
+
+function getUserAddress($userId){
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT address FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    pdoException('Database Select', $config, $sql, $e);
+  }
+  $address = '';
+  if (!empty($row)) {
+    $address = $row['address'];
+  }
+  return $address;
+}
+
+function zlog($func, $data) {
+  $putData = '[' . date("Y-m-d H:i:s") . '] ' .$func . ": $data\n";
+  file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
 }

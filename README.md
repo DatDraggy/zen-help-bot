@@ -1,4 +1,5 @@
 ### ToDo List
+- [ ] Clean up database queries (Ideas pls)
 - [X] securenodesreward: Calculate weekly, monthly
 - [X] zenadmins
 - [X] Wallet types
@@ -9,5 +10,5 @@
 - [X] Thanks-rep system
 - [X] Add thanks address
 - [X] Get thanks
-- [ ] Thanks scoreboard
+- [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
