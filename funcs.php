@@ -9,7 +9,12 @@ function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
 function getCurrentReward() {
   $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1527582142968&rows=30&page=1&sidx=fqdn&sord=asc');
   $data = json_decode($json, true);
-  return $data['userdata']['estearn'];
+  $estEarn = $data['userdata']['estearn'];
+  $estEarnMonthly = $estEarn * 30;
+  $estEarnYearly = $estEarnMonthly * 12;
+  return "Current reward per day: $estEarn
+Reward per month: $estEarnMonthly
+Reward per Year: $estEarnYearly";
 }
 
 function getCurrentPrice() {

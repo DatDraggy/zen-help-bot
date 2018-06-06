@@ -74,8 +74,9 @@ More info can be found here: https://zencash.com/securenodes
 
   case '/securenodesreward':
     //ToDo: Add calculations
-    sendMessage($chatId, 'Current earnings per day: ' . getCurrentReward() . '
+    sendMessage($chatId, getCurrentReward() . '
 
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
 ', '', $messageIdToReplyTo);
     break;
