@@ -267,7 +267,7 @@ function zlog($func, $data) {
 }
 
 function calculateRoi() {
-  $amountNodes = json_decode(file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc'))['userdata']['global']['up'];
+  $amountNodes = json_decode(file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc'), true)['userdata']['global']['up'];
   $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
