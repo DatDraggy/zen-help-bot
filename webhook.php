@@ -227,8 +227,8 @@ Your current address is '.$address;
   case '/community':
     break;
   case '/roi':
-    $roi = calculateRoi();
-
+    $roiMessage = calculateRoi();
+    sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
     break;
   case '/testdev':
     require_once('testdev.php');

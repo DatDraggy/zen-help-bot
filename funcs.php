@@ -272,12 +272,18 @@ function calculateRoi() {
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
   $minedPerMonth = 216000;
-  $vpsPrice = 5.00;
+  $vpsCost = 5.00;
   $monthlyRewardZen = $minedPerMonth * 0.1 / $amountNodes;
   $monthlyReward = $monthlyRewardZen * $valueUsd;
-  $monthlyProfit = $monthlyReward - $vpsPrice;
+  $monthlyProfit = $monthlyReward - $vpsCost;
   $annualProfit = $monthlyProfit * 12;
   $annualProfitZen = $annualProfit / $valueUsd;
   $roi = $annualProfitZen / 42;
-  return $roi;
+  $roiText = "Rough Secure Node ROI: $roi%
+
+ZEN Value in Dollars: $valueUsd
+VPS Cost: $vpsCost
+Amount of Nodes: $amountNodes
+Keep in mind that this is only theoretically and the amount of nodes can raise/fall at any time.";
+  return $roiText;
 }
