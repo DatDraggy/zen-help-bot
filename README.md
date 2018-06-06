@@ -1,6 +1,6 @@
 ### ToDo List
 - [ ] Clean up database queries (Ideas pls)
-- [ ] securenodesreward: Calculate weekly, monthly
+- [X] securenodesreward: Calculate weekly, monthly
 - [X] zenadmins
 - [X] Wallet types
 - [X] Zen helpdesk
