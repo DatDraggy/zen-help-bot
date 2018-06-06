@@ -29,7 +29,7 @@ function getCurrentPrice() {
   return 'Last ZenCash price: ' . number_format($pricesBittrex['result']['Last'], 8) . '
 24h High: ' . number_format($pricesBittrex['result']['High'], 8) . '
 24h Low: ' . number_format($pricesBittrex['result']['Low'], 8) . '
-Price in Dollars: ' . number_format($pricesCoinmarket['price_usd'], 2);
+Price in Dollars: $' . number_format($pricesCoinmarket['price_usd'], 2);
 }
 
 function getAdmins($chatId) {
