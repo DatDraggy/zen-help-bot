@@ -7,12 +7,16 @@ function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
 }
 
 function getCurrentReward() {
-  $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1527582142968&rows=30&page=1&sidx=fqdn&sord=asc');
+  //https://docs.google.com/spreadsheets/d/18EpBevxlpQFAxYN0YY-UvSBUGp-qyzLniahz5nwLiz4/
+  $zenMinedPerMonth = 216000;
+
+  $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc');
   $data = json_decode($json, true);
-  $estEarn = $data['userdata']['estearn'];
-  $estEarnMonthly = $estEarn * 30;
+  $secNodesAmount = $data['userdata']['global']['up'];
+  $estEarnMonthly = $zenMinedPerMonth * '0.1' / $secNodesAmount;
+  $estEarnDaily = $estEarnMonthly / 30;
   $estEarnYearly = $estEarnMonthly * 12;
-  return "Current reward per day: $estEarn
+  return "Current reward per day: $estEarnDaily
 Reward per month: $estEarnMonthly
 Reward per Year: $estEarnYearly";
 }
