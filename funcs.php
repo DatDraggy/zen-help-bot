@@ -281,8 +281,8 @@ function calculateRoi() {
   $roi = number_format($annualProfitZen / 42 * 100, 2);
   $roiText = "Rough Secure Node ROI: $roi%
 
-ZEN Value in Dollars: $valueUsd
-VPS Cost: $vpsCost
+ZEN Value in Dollars: $$valueUsd
+VPS Cost: $" . number_format($vpsCost, 2) . "
 Amount of Nodes: $amountNodes
 Keep in mind that this is only theoretically and the amount of nodes can raise/fall at any time.";
   return $roiText;
