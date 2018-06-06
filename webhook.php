@@ -227,6 +227,8 @@ Your current address is '.$address;
   case '/community':
     break;
   case '/roi':
+    $roi = calculateRoi();
+
     break;
   case '/testdev':
     require_once('testdev.php');
