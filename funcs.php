@@ -278,8 +278,8 @@ function calculateRoi() {
   $monthlyProfit = $monthlyReward - $vpsCost;
   $annualProfit = $monthlyProfit * 12;
   $annualProfitZen = $annualProfit / $valueUsd;
-  $roi = $annualProfitZen / 42;
-  $roiText = "$annualProfitZen Rough Secure Node ROI: $roi%
+  $roi = $annualProfitZen / 42 * 100;
+  $roiText = "Rough Secure Node ROI: $roi%
 
 ZEN Value in Dollars: $valueUsd
 VPS Cost: $vpsCost
