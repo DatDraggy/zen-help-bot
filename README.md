@@ -12,4 +12,4 @@
 - [X] Get thanks
 - [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
-- [ ] Roi calculator
+- [X] Roi calculator [for 10% block]
