@@ -230,6 +230,51 @@ Your current address is '.$address;
     $roiMessage = calculateRoi();
     sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
     break;
+/*
+ * TIPPING BOT
+*/
+  case '/mybalance':
+    /*
+     * SELECT address FROM users WHERE userId =
+     * execute zen-cli, get balance addr
+     * sendMessage
+     */
+    break;
+
+  case '/tip':
+    /*
+     * SELECT address FROM tipping WHERE userId = fromUserId if empty tell user
+     * get balance
+     * amountToSend = toSend - 0.0001
+     * newBalance = balance - toSend
+     * if new balance < 0 sendMessage Error die
+     * else if newBalance = 0 do only one send
+     * else if newBalance > 0 do send change to same address
+     * if second arr elem contains @ do SELECT address FROM users WHERE username = @ if empty generate
+     * send
+     * else if repliedToUserId isset do SELECT address FROM users WHERE userId = repliedToUserId if empty generate
+     * send
+     *
+     * sendMessage Succ
+     */
+    break;
+
+  case '/deposit':
+    /*
+     * if private SELECT address FROM users WHERE userId = fromUserId if empty generate sendMessage else sendMessage address
+     * else tell to use private
+     */
+    break;
+
+  case '/withdraw':
+    /*
+     *
+     */
+    break;
+
+/*
+ * TIPPING BOT
+ */
   case '/testdev':
     require_once('testdev.php');
     break;
