@@ -222,7 +222,7 @@ Your current address is '.$address;
 ' . $infos['groups']);
     break;
   case '/51':
-    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
+    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/', '', $messageIdToReplyTo);
     break;
   case '/community':
     break;
