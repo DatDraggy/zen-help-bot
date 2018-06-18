@@ -77,7 +77,7 @@ function buildDatabaseConnection($config) {
     $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch (PDOException $e) {
-    pdoException('Database Insert', $config, '', $e);
+    pdoException('Database Connection', $config, '', $e);
   }
   return $dbConnection;
 }
