@@ -83,6 +83,9 @@ function buildDatabaseConnection($config) {
 }
 
 function pdoException($subject, $config, $sql='', $e) {
+  global $chatId;
+  sendMessage($chatId, 'Database Error! The administrator has been notified.');
+  sendMessage('', 'Bruv, sometin in da database is ded, innit? Check it out G');
   $to = $config['mail'];
   $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
   $headers = 'From: ' . $config['mail'];

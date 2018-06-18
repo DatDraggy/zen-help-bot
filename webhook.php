@@ -125,8 +125,18 @@ Here is a small list of available commands. Click them to find out what they say
 /51
 /roi
 ');
-    } else {
-      $replyMarkup = array('inline_keyboard' => array(array(array("text" => "/zencommands", "url" => "https://telegram.me/zencashhelp_bot?start=zencommands"))));
+    }
+    else {
+      $replyMarkup = array(
+        'inline_keyboard' => array(
+          array(
+            array(
+              "text" => "/zencommands",
+              "url"  => "https://telegram.me/zencashhelp_bot?start=zencommands"
+            )
+          )
+        )
+      );
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
@@ -143,7 +153,8 @@ Click here to get a list of all commands:
 
 ';
       sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageIdToReplyTo);
-    } else {
+    }
+    else {
       sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
     }
     break;
@@ -172,7 +183,8 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
 Their thank-score will be raised which will hopefully encourage in more people helping.');
-    } else {
+    }
+    else {
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
@@ -190,29 +202,29 @@ Their thank-score will be raised which will hopefully encourage in more people h
     }
     break;
   case '/myaddress':
-    if ($chatType === 'private'){
-      if(empty($messageArr[1])){
+    if ($chatType === 'private') {
+      if (empty($messageArr[1])) {
         $address = getUserAddress($senderUserId);
         $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers.';
-        if(!empty($address)){
+        if (!empty($address)) {
           $messageToSend .= '
           
-Your current address is '.$address;
+Your current address is ' . $address;
         }
         sendMessage($chatId, $messageToSend);
       }
-      else if(strlen($messageArr[1]) === 35){
+      else if (strlen($messageArr[1]) === 35) {
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
-        sendMessage($chatId, 'Your address has been set to '.$messageArr[1]);
+        sendMessage($chatId, 'Your address has been set to ' . $messageArr[1]);
         zlog('/myaddress', 'Added address to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
       }
-      else{
+      else {
         sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');
       }
     }
     break;
   case '/scoreboard':
-    if($chatType === 'private') {
+    if ($chatType === 'private') {
       $scoreboard = getScoreboard();
       sendMessage($chatId, 'These are the top 3 people with the most thanks received:
 ' . $scoreboard);
@@ -232,9 +244,9 @@ Your current address is '.$address;
     $roiMessage = calculateRoi();
     sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
     break;
-/*
- * TIPPING BOT
-*/
+  /*
+   * TIPPING BOT
+  */
   case '/mybalance':
     /*
      * SELECT address FROM users WHERE userId =
@@ -274,9 +286,14 @@ Your current address is '.$address;
      */
     break;
 
-/*
- * TIPPING BOT
- */
+  /*
+   * TIPPING BOT
+   */
+  case '/id':
+    if ($chatType === 'private') {
+      sendMessage($chatId, $chatId);
+    }
+    break;
   case '/testdev':
     require_once('testdev.php');
     break;
