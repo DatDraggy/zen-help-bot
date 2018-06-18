@@ -90,6 +90,8 @@ function pdoException($subject, $config, $sql='', $e) {
   $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
   $headers = 'From: ' . $config['mail'];
   mail($to, $subject, $txt, $headers);
+  http_response_code(200);
+  die();
 }
 
 function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
