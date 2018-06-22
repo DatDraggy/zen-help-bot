@@ -292,3 +292,24 @@ Amount of Nodes: $amountNodes
 Keep in mind that this is only theoretically and the amount of nodes can raise/fall at any time.";
   return $roiText;
 }
+
+function getDepositAddress($userId){
+    global $config;
+    $dbConnection = 
+    buildDatabaseConnection($config); 
+    try {
+        $sql = "SELECT address FROM users WHERE user_id = '$userId'";}
+    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    pdoException('Database Select', $config, $sql, $e);
+  }
+    if(!empty($row)){
+return $row['address'];
+}
+else{
+
+}
+}
