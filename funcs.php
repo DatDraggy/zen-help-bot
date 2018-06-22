@@ -310,6 +310,6 @@ function getDepositAddress($userId){
 return $row['address'];
 }
 else{
-
+//shell_exec();
 }
 }
