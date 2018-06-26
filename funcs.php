@@ -77,15 +77,15 @@ function buildDatabaseConnection($config) {
     $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch (PDOException $e) {
-    pdoException('Database Connection', $config, '', $e);
+    notifyOnException('Database Connection', $config, '', $e);
   }
   return $dbConnection;
 }
 
-function pdoException($subject, $config, $sql='', $e) {
+function notifyOnException($subject, $config, $sql = '', $e) {
   global $chatId;
-  sendMessage($chatId, 'Database Error! The administrator has been notified.');
-  sendMessage(175933892, 'Bruv, sometin in da database is ded, innit? Check it out G');
+  sendMessage($chatId, 'Internal Error! The administrator has been notified.');
+  sendMessage(175933892, 'Bruv, sometin in da database is ded, innit? Check it out G. ' . $e);
   $to = $config['mail'];
   $txt = __FILE__ . ' ' . $sql . ' Error: ' . $e;
   $headers = 'From: ' . $config['mail'];
@@ -100,56 +100,41 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
 
   //Select where replied to userid, get score for convenience
   try {
-    $sql = "SELECT score FROM thanks WHERE user_id = '$repliedToUserId'";
-    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :repliedToUserId");
+    $sql = "SELECT score FROM users WHERE user_id = '$repliedToUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM users WHERE user_id = :repliedToUserId");
     $stmt->bindParam(':repliedToUserId', $repliedToUserId);
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
   if (!empty($row)) {
     $score = $row['score'] + 1;
     //Updating usernames and score+1
     try {
-      $sql = "UPDATE thanks SET score=score+1 WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE thanks SET score=score+1 WHERE user_id = :repliedToUserId");
+      $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername', score=score+1 WHERE user_id = '$repliedToUserId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET name='$repliedToName', username='$repliedToUsername', score=score+1 WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      pdoException('Database Update', $config, $sql, $e);
-    }
-    try {
-      $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername' WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE users SET name=:repliedToName, username=:repliedToUsername WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->execute();
     } catch (PDOException $e) {
-      pdoException('Database Update', $config, $sql, $e);
+      notifyOnException('Database Update', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Updated user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
-  } else {
+  }
+  else {
     $score = 1;
     //if not exist, create entry
     try {
-      $sql = "INSERT INTO thanks(user_id, score) VALUES ('$repliedToUserId', '1')";
-      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id, score) VALUES (:repliedToUserId, '1')");
-      $stmt->bindParam(':repliedToUserId', $repliedToUserId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      pdoException('Database Update', $config, $sql, $e);
-    }
-    try {
-      $sql = "INSERT INTO users(user_id, name, username) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername')";
-      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername)");
+      $sql = "INSERT INTO users(user_id, name, username, score) VALUES ('$repliedToUserId', '$repliedToName', '$repliedToUsername', '1')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username, score) VALUES (:repliedToUserId, :repliedToName, :repliedToUsername, '1')");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
       $stmt->execute();
     } catch (PDOException $e) {
-      pdoException('Database Update', $config, $sql, $e);
+      notifyOnException('Database Insert', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Inserted user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
   }
@@ -163,13 +148,13 @@ function getOwnThankScore($senderUserId) {
 
   //Select where replied to userid, get score for convenience
   try {
-    $sql = "SELECT score FROM thanks WHERE user_id = '$senderUserId'";
-    $stmt = $dbConnection->prepare("SELECT score FROM thanks WHERE user_id = :senderUserId");
+    $sql = "SELECT score FROM users WHERE user_id = '$senderUserId'";
+    $stmt = $dbConnection->prepare("SELECT score FROM users WHERE user_id = :senderUserId");
     $stmt->bindParam(':senderUserId', $senderUserId);
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
   $ownScore = 0;
   if (!empty($row)) {
@@ -183,18 +168,19 @@ function getScoreboard() {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = 'SELECT name, username, score FROM users INNER JOIN thanks ON thanks.user_id = users.user_id ORDER BY score DESC LIMIT 3';
+    $sql = 'SELECT name, username, score FROM users ORDER BY score DESC LIMIT 3';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
         $scoreboard .= '
-'.$row['name'] . ': ' . $row['score'];
-      } else {
+' . $row['name'] . ': ' . $row['score'];
+      }
+      else {
         $scoreboard .= '
 @' . $row['username'] . ': ' . $row['score'];
       }
     }
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
   return $scoreboard;
 }
@@ -209,7 +195,7 @@ function addUserAddress($userId, $address, $name, $username) {
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
   if (!empty($row)) {
     try {
@@ -219,7 +205,7 @@ function addUserAddress($userId, $address, $name, $username) {
       $stmt->bindParam(':userId', $userId);
       $stmt->execute();
     } catch (PDOException $e) {
-      pdoException('Database Update', $config, $sql, $e);
+      notifyOnException('Database Update', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Updated user ' . substr($userId, '0', strlen($userId) - 3));
   }
@@ -233,21 +219,13 @@ function addUserAddress($userId, $address, $name, $username) {
       $stmt->bindParam(':address', $address);
       $stmt->execute();
     } catch (PDOException $e) {
-      pdoException('Database Insert', $config, $sql, $e);
-    }
-    try {
-      $sql = "INSERT INTO thanks(user_id) VALUES ('$userId')";
-      $stmt = $dbConnection->prepare("INSERT INTO thanks(user_id) VALUES (:userId)");
-      $stmt->bindParam(':userId', $userId);
-      $stmt->execute();
-    } catch (PDOException $e) {
-      pdoException('Database Insert', $config, $sql, $e);
+      notifyOnException('Database Insert', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Inserted user ' . substr($userId, '0', strlen($userId) - 3));
   }
 }
 
-function getUserAddress($userId){
+function getUserAddress($userId) {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
@@ -257,7 +235,7 @@ function getUserAddress($userId){
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
   $address = '';
   if (!empty($row)) {
@@ -267,7 +245,7 @@ function getUserAddress($userId){
 }
 
 function zlog($func, $data) {
-  $putData = '[' . date("Y-m-d H:i:s") . '] ' .$func . ": $data\n";
+  $putData = '[' . date("Y-m-d H:i:s") . '] ' . $func . ": $data\n";
   file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
 }
 
@@ -293,23 +271,145 @@ Keep in mind that this is only theoretically and the amount of nodes can raise/f
   return $roiText;
 }
 
-function getDepositAddress($userId){
-    global $config;
-    $dbConnection = 
-    buildDatabaseConnection($config); 
-    try {
-        $sql = "SELECT address FROM users WHERE user_id = '$userId'";}
-    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
+function getDepositAddress($userId) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT tipping FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :userId");
     $stmt->bindParam(':userId', $userId);
     $stmt->execute();
     $row = $stmt->fetch();
   } catch (PDOException $e) {
-    pdoException('Database Select', $config, $sql, $e);
+    notifyOnException('Database Select', $config, $sql, $e);
   }
-    if(!empty($row)){
-return $row['address'];
+  if (!empty($row['tipping'])) {
+    $tippingAddress = $row['tipping'];
+  }
+  else if (!empty($row)) {
+    $tippingAddress = getNewAddress($config);
+    try {
+      $sql = "UPDATE users SET address='$tippingAddress' WHERE user_id = '$userId'";
+      $stmt = $dbConnection->prepare("UPDATE users SET tipping=:tipping WHERE user_id = :userId");
+      $stmt->bindParam(':tipping', $tippingAddress);
+      $stmt->bindParam(':userId', $userId);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      notifyOnException('Database Select', $config, $sql, $e);
+    }
+  }
+  else {
+    $tippingAddress = getNewAddress($config);
+    try {
+      $sql = "INSERT INTO users(user_id, tipping) VALUES ('$userId', '$tippingAddress')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, tipping) VALUES (:userId, :tippingAddress)");
+      $stmt->bindParam(':userId', $userId);
+      $stmt->bindParam(':tippingAddress', $tippingAddress);
+      $stmt->execute();
+    } catch (PDOException $e) {
+      notifyOnException('Database Select', $config, $sql, $e);
+    }
+  }
+  return $tippingAddress;
 }
-else{
-//shell_exec();
+
+function getBalance($userId) {
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT tipping FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    notifyOnException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row['tipping'])) {
+    $tippingAddress = $row['tipping'];
+  }
+  else {
+    return '0.00000000';
+  }
+  //Use insight api maybe?
+  return z_getBalance($config, $tippingAddress);
 }
+
+###############
+#RPC FUNCTIONS#
+###############
+function doRpcCall($config, $json) {
+  $user = $config['rpcuser'];
+  $password = $config['rpcpass'];
+  $port = $config['rpcport'];
+  $address = $config['rpcaddress'];
+
+  $opts = array(
+    'http' => array(
+      'method' => 'POST',
+      'header' => 'Content-Type: text/plain',
+      'auth'   => [
+        $user,
+        $password
+      ],
+    )
+  );
+
+  $opts['http']['json'] = $json;
+
+  $context = stream_context_create($opts);
+  $request = file_get_contents("http://$address:$port", false, $context);
+  if ($request === FALSE) {
+    notifyOnException('Error on RPC', $config, '', $request);
+    return FALSE;
+  }
+  else {
+    return $request;
+  }
+}
+
+function getNewAddress($config) {
+  $command = 'getnewaddress';
+
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': []}";
+
+  $response = doRpcCall($config, $json);
+  if ($response === FALSE) {
+    return FALSE;
+  }
+  else {
+    $jsondec = json_decode($response);
+    return $jsondec['result'];
+  }
+}
+
+function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
+  $command = 'z_sendmany';
+  $change = $currentBalance - $amount - $config['fee'];
+
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
+
+  $response = doRpcCall($config, $json);
+  if ($response === FALSE) {
+    return FALSE;
+  }
+  else {
+    $jsondec = json_decode($response);
+    return $jsondec['result'];
+  }
+}
+
+function z_getBalance($config, $tipping) {
+  $command = 'z_getbalance';
+
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': $command, 'params': ['$tipping', 5] }";
+
+  $response = doRpcCall($config, $json);
+  if ($response === FALSE) {
+    return FALSE;
+  }
+  else {
+    $jsondec = json_decode($response);
+    return $jsondec['result'];
+  }
 }

@@ -253,6 +253,14 @@ Your current address is ' . $address;
      * execute zen-cli, get balance addr
      * sendMessage
      */
+    if ($chatType === 'private') {
+      $balance = getBalance($senderUserId);
+      if ($balance === FALSE) {
+      }
+      else {
+        sendMessage($chatId, "Your current balance is: $balance");
+      }
+    }
     break;
 
   case '/tip':
@@ -274,17 +282,17 @@ Your current address is ' . $address;
     break;
 
   case '/deposit':
-    /*
-     * if private SELECT address FROM users WHERE userId = fromUserId if empty generate sendMessage else sendMessage address
-     * else tell to use private
-     */
-    if($chatType === 'private'){
-        $address = getDepositAddress($senderUserId);
-        sendMessage($chatId, "
+    if ($chatType === 'private') {
+      $fee = $config['fee'];
+      $address = 'Feature Disabled';
+      //$address = getDepositAddress($senderUserId);
+
+      sendMessage($chatId, "
 Here is your deposit address:
 $address
 
-Send any amount of ZEN to it. You'll be able to widthdraw it at any time.");
+Send any amount of ZEN to it. You'll be able to widthdraw it at any time by using /withdraw.
+When sending tips, a fee of $fee will be substracted from your balance.");
     }
     break;
 
@@ -297,6 +305,7 @@ Send any amount of ZEN to it. You'll be able to widthdraw it at any time.");
   /*
    * TIPPING BOT
    */
+
   case '/id':
     if ($chatType === 'private') {
       sendMessage($chatId, $chatId);
