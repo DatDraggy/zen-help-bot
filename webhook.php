@@ -278,7 +278,7 @@ Your current address is ' . $address;
      * if private SELECT address FROM users WHERE userId = fromUserId if empty generate sendMessage else sendMessage address
      * else tell to use private
      */
-    if($chatType === 'private){
+    if($chatType === 'private'){
         $address = getDepositAddress($senderUserId);
         sendMessage($chatId, "
 Here is your deposit address:
