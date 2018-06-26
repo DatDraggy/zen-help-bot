@@ -292,7 +292,7 @@ Amount of Nodes: $amountNodes
 Keep in mind that this is only theoretically and the amount of nodes can raise/fall at any time.";
   return $roiText;
 }
-
+/*
 function getDepositAddress($userId){
     global $config;
     $dbConnection = 
@@ -313,3 +313,4 @@ else{
 //shell_exec();
 }
 }
+*/
