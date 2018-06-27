@@ -11,7 +11,12 @@ $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
-$messageIdToReplyTo = $messageId;
+if($chatType !== 'private') {
+  $messageIdToReplyTo = $messageId;
+}
+else{
+  $messageIdToReplyTo = '';
+}
 $senderUserId = $data['message']['from']['id'];
 $senderName = $data['message']['from']['first_name'];
 if (isset($replyToMessage['from']['last_name'])) {
@@ -24,7 +29,9 @@ if (isset($data['message']['from']['username'])) {
 if (isset($data['message']['reply_to_message'])) {
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
-  $messageIdToReplyTo = $repliedToMessageId;
+  if($chatType !== 'private') {
+    $messageIdToReplyTo = $repliedToMessageId;
+  }
   $repliedToUserId = $replyToMessage['from']['id'];
   $repliedToName = $replyToMessage['from']['first_name'];
   if (isset($replyToMessage['from']['last_name'])) {
@@ -177,7 +184,7 @@ You will have to register and can only receive free ZEN every 20 hours.', '', $m
   case '/helpdesk':
   case '/zensupport':
     sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
-    https://support.zencash.com', '', $messageIdToReplyTo);
+https://support.zencash.com', '', $messageIdToReplyTo);
     break;
   case '/thanks':
     if ($chatType === 'private') {
@@ -264,6 +271,18 @@ Your current address is ' . $address;
     break;
 
   case '/tip':
+    if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
+      if (isset($repliedToMessageId)) {
+        //If is int
+        if (is_int($messageArr[1])) {
+          // /tip 0.1
+        }
+      } else {
+        //To implement later
+        // /tip username 0.1
+      }
+    }
+
     /*
      * SELECT address FROM tipping WHERE userId = fromUserId if empty tell user
      * get balance
