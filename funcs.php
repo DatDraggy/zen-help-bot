@@ -335,6 +335,71 @@ function getBalance($userId) {
   return z_getBalance($config, $tippingAddress);
 }
 
+function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
+  /*
+     * SELECT address FROM tipping WHERE userId = fromUserId if empty tell user
+     * get balance
+     * amountToSend = toSend - 0.0001
+     * newBalance = balance - toSend
+     * if new balance < 0 sendMessage Error die
+     * else if newBalance = 0 do only one send
+     * else if newBalance > 0 do send change to same address
+     * if second arr elem contains @ do SELECT address FROM users WHERE username = @ if empty generate
+     * send
+     * else if repliedToUserId isset do SELECT address FROM users WHERE userId = repliedToUserId if empty generate
+     * send
+     *
+     * sendMessage Succ
+     */
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT tipping FROM users WHERE user_id = '$fromUserId'";
+    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :fromUserId");
+    $stmt->bindParam(':fromUserId', $fromUserId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    notifyOnException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row) && !empty($row['tipping'])) {
+    $tippingFromAddress = $row['tipping'];
+  } else {
+    return 'no_balance';
+  }
+  try {
+    $sql = "SELECT tipping FROM users WHERE user_id = '$toUserId'";
+    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :toUserId");
+    $stmt->bindParam(':toUserId', $toUserId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    notifyOnException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row)) {
+    if (!empty($row['tipping'])) {
+      $tippingToAddress = $row['tipping'];
+    } else {
+      //Generate Address and update
+    }
+  } else {
+    //Generate address and insert
+  }
+
+  $currentBalance = z_getBalance($config, $tippingFromAddress);
+  if ($currentBalance >= $config['fee'] + $amountToSend) {
+    if ($currentBalance !== FALSE) {
+      if (sendMany($config, $tippingFromAddress, $tippingToAddress, $amountToSend, $currentBalance) === FALSE) {
+        return 'error';
+      }
+    }
+  } else {
+    return 'no_balance';
+  }
+
+  return TRUE;
+}
+
 ###############
 #RPC FUNCTIONS#
 ###############

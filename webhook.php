@@ -11,6 +11,7 @@ $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
+$fee = $config['fee'];
 if($chatType !== 'private') {
   $messageIdToReplyTo = $messageId;
 }
@@ -274,35 +275,25 @@ Your current address is ' . $address;
     if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
       if (isset($repliedToMessageId)) {
         //If is int
-        if (is_int($messageArr[1])) {
+        if (is_int($messageArr[1]) && $messageArr[1] > 0) {
           // /tip 0.1
+          $tipResult = sendTipToMessage($senderUserId, $repliedToUserId, $messageArr[1]);
+          if($tipResult === 'no_balance'){
+            sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address is empty. Keep in mind that there is a $fee fee.", $messageId);
+          }
+          else if($tipResult === TRUE){
+            sendMessage($chatId, "$senderUsername just sent you $messageArr[1] ZEN as a tip!", $messageIdToReplyTo);
+          }
         }
       } else {
         //To implement later
         // /tip username 0.1
       }
     }
-
-    /*
-     * SELECT address FROM tipping WHERE userId = fromUserId if empty tell user
-     * get balance
-     * amountToSend = toSend - 0.0001
-     * newBalance = balance - toSend
-     * if new balance < 0 sendMessage Error die
-     * else if newBalance = 0 do only one send
-     * else if newBalance > 0 do send change to same address
-     * if second arr elem contains @ do SELECT address FROM users WHERE username = @ if empty generate
-     * send
-     * else if repliedToUserId isset do SELECT address FROM users WHERE userId = repliedToUserId if empty generate
-     * send
-     *
-     * sendMessage Succ
-     */
     break;
 
   case '/deposit':
     if ($chatType === 'private') {
-      $fee = $config['fee'];
       $address = 'Feature Disabled';
       //$address = getDepositAddress($senderUserId);
 
