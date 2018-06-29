@@ -12,10 +12,10 @@ $chatType = $data['message']['chat']['type'];
 $message = $data['message']['text'];
 $messageId = $data['message']['message_id'];
 $fee = $config['fee'];
-if($chatType !== 'private') {
+if ($chatType !== 'private') {
   $messageIdToReplyTo = $messageId;
 }
-else{
+else {
   $messageIdToReplyTo = '';
 }
 $senderUserId = $data['message']['from']['id'];
@@ -30,7 +30,7 @@ if (isset($data['message']['from']['username'])) {
 if (isset($data['message']['reply_to_message'])) {
   $replyToMessage = $data['message']['reply_to_message'];
   $repliedToMessageId = $replyToMessage['message_id'];
-  if($chatType !== 'private') {
+  if ($chatType !== 'private') {
     $messageIdToReplyTo = $repliedToMessageId;
   }
   $repliedToUserId = $replyToMessage['from']['id'];
@@ -50,7 +50,8 @@ if (substr($message, '0', '1') == '/') {
   if (isset($messageArr[1]) && $messageArr[1] == 'zencommands') {
     $command = '/zencommands';
   }
-} else {
+}
+else {
   die();
 }
 
@@ -104,7 +105,18 @@ You can see the current daily reward for a secure node here: https://securenodes
 We do not have masternodes. ' . $nodeText . '
 ', '', $messageIdToReplyTo);
     break;
+  case '/tipbot':
+    if ($chatType === 'private') {
+      sendMessage($chatId, '
+These are all commands associated with the tipping bot.
 
+/deposit - Get your tipping address to stock up your balance
+/withdraw - Withdraw your tipping ZEN to your /myaddress
+/tip - Tip a user
+/mybalance - Get your tipping balance
+');
+    }
+    break;
   case '/zencommands':
   case '/zenhelp':
   case '/zenhelp@ZenCashHelp_bot':
@@ -132,6 +144,18 @@ Here is a small list of available commands. Click them to find out what they say
 /myaddress
 /51
 /roi
+/deposit
+/mybalance
+/tipbot
+
+Commands that require parameters: (click to see usage)
+/withdraw
+/tip
+/thanks
+
+<code>Text</code> - Indicates a command name
+<b>Text</b> - Required parameter
+<i>Text</i> - Optional parameter
 ');
     }
     else {
@@ -197,7 +221,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
         if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
           sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
-          zlog('/thanks', 'Added thanks to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
+          zlog('/thanks', 'Added thanks to user ' . anonUserId($repliedToUserId));
         }
       }
     }
@@ -213,7 +237,7 @@ Their thank-score will be raised which will hopefully encourage in more people h
     if ($chatType === 'private') {
       if (empty($messageArr[1])) {
         $address = getUserAddress($senderUserId);
-        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers.';
+        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers and withdrawing your tips.';
         if (!empty($address)) {
           $messageToSend .= '
           
@@ -224,7 +248,7 @@ Your current address is ' . $address;
       else if (strlen($messageArr[1]) === 35) {
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
         sendMessage($chatId, 'Your address has been set to ' . $messageArr[1]);
-        zlog('/myaddress', 'Added address to user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
+        zlog('/myaddress', 'Added address to user ' . anonUserId($repliedToUserId));
       }
       else {
         sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');
@@ -272,24 +296,46 @@ Your current address is ' . $address;
     break;
 
   case '/tip':
-    if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
-      if (isset($repliedToMessageId)) {
-        //If is int
-        if (is_int($messageArr[1]) && $messageArr[1] > 0) {
-          // /tip 0.1
-          $tipResult = sendTipToMessage($senderUserId, $repliedToUserId, $messageArr[1]);
-          if($tipResult === 'no_balance'){
-            sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address is empty. Keep in mind that there is a $fee fee.", $messageId);
-          }
-          else if($tipResult === TRUE){
-            sendMessage($chatId, "$senderUsername just sent you $messageArr[1] ZEN as a tip!", $messageIdToReplyTo);
+    if ($chatType === 'private') {
+      sendMessage($chatId, "
+Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
+
+Usage: <code>/tip</code> <b>amount</b>
+
+/tip 0.1");
+      die();
+    }
+    if (empty($messageArr[1])) {
+      if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
+        $tip = $messageArr[1];
+        if (isset($repliedToMessageId)) {
+          //If is int
+          if (is_int($tip) && $tip > 0) {
+            // /tip 0.1
+            if ($tip <= 1) {
+              $tipResult = sendTipToMessage($senderUserId, $repliedToUserId, $messageArr[1]);
+              zlog('/myaddress', 'User ' . anonUserId($senderUserId) . ' sent tip ' . $tip . ' to ' . anonUserId($repliedToUserId));
+              if ($tipResult === FALSE) {
+              }
+              else if ($tipResult === 'no_balance') {
+                sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", '', $messageId);
+              }
+              else if ($tipResult === TRUE) {
+                sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", '', $messageIdToReplyTo);
+              }
+            }
+            else {
+              sendMessage($chatId, "Because of security reasons you can't send more than 1 ZEN.", '', $messageId);
+            }
           }
         }
-      } else {
-        //To implement later
-        // /tip username 0.1
+        else {
+          //To implement later
+          // /tip username 0.1
+        }
       }
     }
+
     break;
 
   case '/deposit':
@@ -298,8 +344,8 @@ Your current address is ' . $address;
       //$address = getDepositAddress($senderUserId);
 
       sendMessage($chatId, "
-Here is your deposit address:
-$address
+This is your deposit address:
+<b>$address</b>
 
 Send any amount of ZEN to it. You'll be able to widthdraw it at any time by using /withdraw.
 When sending tips, a fee of $fee will be substracted from your balance.");
@@ -307,9 +353,11 @@ When sending tips, a fee of $fee will be substracted from your balance.");
     break;
 
   case '/withdraw':
-    /*
-     *
-     */
+    if ($chatType === 'private' && empty($messageArr[1])) {
+      $amount = $messageArr[1];
+      //function withdraw($senderUserId, $amount);
+      sendMessage($chatId, "Success. Your $amount ZEN are now on their way to your /myaddress address.");
+    }
     break;
 
   /*

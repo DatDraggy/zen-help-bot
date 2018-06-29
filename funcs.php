@@ -82,7 +82,7 @@ function buildDatabaseConnection($config) {
   return $dbConnection;
 }
 
-function notifyOnException($subject, $config, $sql = '', $e) {
+function notifyOnException($subject, $config, $sql = '', $e = '') {
   global $chatId;
   sendMessage($chatId, 'Internal Error! The administrator has been notified.');
   sendMessage(175933892, 'Bruv, sometin in da database is ded, innit? Check it out G. ' . $e);
@@ -295,7 +295,7 @@ function getDepositAddress($userId) {
       $stmt->bindParam(':userId', $userId);
       $stmt->execute();
     } catch (PDOException $e) {
-      notifyOnException('Database Select', $config, $sql, $e);
+      notifyOnException('Database Update', $config, $sql, $e);
     }
   }
   else {
@@ -307,7 +307,7 @@ function getDepositAddress($userId) {
       $stmt->bindParam(':tippingAddress', $tippingAddress);
       $stmt->execute();
     } catch (PDOException $e) {
-      notifyOnException('Database Select', $config, $sql, $e);
+      notifyOnException('Database Insert', $config, $sql, $e);
     }
   }
   return $tippingAddress;
@@ -336,21 +336,6 @@ function getBalance($userId) {
 }
 
 function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
-  /*
-     * SELECT address FROM tipping WHERE userId = fromUserId if empty tell user
-     * get balance
-     * amountToSend = toSend - 0.0001
-     * newBalance = balance - toSend
-     * if new balance < 0 sendMessage Error die
-     * else if newBalance = 0 do only one send
-     * else if newBalance > 0 do send change to same address
-     * if second arr elem contains @ do SELECT address FROM users WHERE username = @ if empty generate
-     * send
-     * else if repliedToUserId isset do SELECT address FROM users WHERE userId = repliedToUserId if empty generate
-     * send
-     *
-     * sendMessage Succ
-     */
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
@@ -364,7 +349,8 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   }
   if (!empty($row) && !empty($row['tipping'])) {
     $tippingFromAddress = $row['tipping'];
-  } else {
+  }
+  else {
     return 'no_balance';
   }
   try {
@@ -379,25 +365,64 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   if (!empty($row)) {
     if (!empty($row['tipping'])) {
       $tippingToAddress = $row['tipping'];
-    } else {
-      //Generate Address and update
     }
-  } else {
+    else {
+      //Generate Address and update
+      $tippingToAddress = getNewAddress($config);
+      if ($tippingToAddress === FALSE) {
+        notifyOnException('Generate new Address send tip', $config);
+        return FALSE;
+      }
+      try {
+        $sql = "UPDATE users SET tipping='$tippingToAddress' WHERE user_id = '$toUserId'";
+        $stmt = $dbConnection->prepare("UPDATE users SET tipping=:tippingToAddress WHERE user_id = :toUserId");
+        $stmt->bindParam(':tippingToAddress', $tippingToAddress);
+        $stmt->bindParam(':toUserId', $toUserId);
+        $stmt->execute();
+        $row = $stmt->fetch();
+      } catch (PDOException $e) {
+        notifyOnException('Database Update', $config, $sql, $e);
+      }
+    }
+  }
+  else {
     //Generate address and insert
+    $tippingToAddress = getNewAddress($config);
+    if ($tippingToAddress === FALSE) {
+      notifyOnException('Generate new Address send tip', $config);
+      return FALSE;
+    }
+    try {
+      $sql = "INSERT INTO users(user_id, tipping) VALUES ('$toUserId', '$tippingToAddress')";
+      $stmt = $dbConnection->prepare("INSERT INTO users(user_id, tipping) VALUES (:toUserId, :tippingToAddress)");
+      $stmt->bindParam(':toUserId', $toUserId);
+      $stmt->bindParam(':tippingToAddress', $tippingToAddress);
+      $stmt->execute();
+      $row = $stmt->fetch();
+    } catch (PDOException $e) {
+      notifyOnException('Database Insert', $config, $sql, $e);
+    }
   }
 
   $currentBalance = z_getBalance($config, $tippingFromAddress);
-  if ($currentBalance >= $config['fee'] + $amountToSend) {
-    if ($currentBalance !== FALSE) {
-      if (sendMany($config, $tippingFromAddress, $tippingToAddress, $amountToSend, $currentBalance) === FALSE) {
-        return 'error';
-      }
+  if ($currentBalance === FALSE) {
+    notifyOnException('Check balance on send', $config);
+    return FALSE;
+  }
+  if ($currentBalance >= ($config['fee'] + $amountToSend)) {
+    if (sendMany($config, $tippingFromAddress, $tippingToAddress, $amountToSend, $currentBalance) === FALSE) {
+      return 'error';
     }
-  } else {
+  }
+  else {
     return 'no_balance';
   }
 
   return TRUE;
+}
+
+function anonUserId($userId) {
+  return substr($userId, '0', strlen($userId) - 3);
 }
 
 ###############
@@ -467,7 +492,7 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
 function z_getBalance($config, $tipping) {
   $command = 'z_getbalance';
 
-  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': $command, 'params': ['$tipping', 5] }";
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': $command, 'params': ['$tipping'] }";
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
