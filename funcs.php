@@ -555,10 +555,10 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
 
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
   if ($change <= 0) {
-    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}], "1", "$fee"]}';
+    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}], 1, $fee]}';
 
   } else {
-    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}], "1", "$fee"]}';
+    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}], 1, $fee]}';
     $json = str_replace('$change', $change, $json);
   }
   $json = str_replace('$command', $command, $json);
