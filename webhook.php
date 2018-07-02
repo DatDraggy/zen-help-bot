@@ -248,7 +248,7 @@ Your current address is ' . $address;
       else if (strlen($messageArr[1]) === 35) {
         addUserAddress($senderUserId, $messageArr[1], $senderName, $senderUsername);
         sendMessage($chatId, 'Your address has been set to ' . $messageArr[1]);
-        zlog('/myaddress', 'Added address to user ' . anonUserId($repliedToUserId));
+        zlog('/myaddress', 'Added address to user ' . anonUserId($senderUserId));
       }
       else {
         sendMessage($chatId, 'Your address is invalid. Please try again. Remember, only t-addresses are accepted.');

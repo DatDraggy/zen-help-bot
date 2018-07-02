@@ -246,7 +246,7 @@ function getUserAddress($userId) {
 
 function zlog($func, $data) {
   $putData = '[' . date("Y-m-d H:i:s") . '] ' . $func . ": $data\n";
-  file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
+  //file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
 }
 
 function calculateRoi() {
