@@ -340,10 +340,9 @@ Usage: <code>/tip</code> <b>amount</b>
     break;
 
   case '/deposit':
-    die();
     if ($chatType === 'private') {
       $address = 'Feature Disabled';
-      //$address = getDepositAddress($senderUserId);
+      $address = getDepositAddress($senderUserId);
 
       sendMessage($chatId, "
 This is your deposit address:
