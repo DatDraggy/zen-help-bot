@@ -425,8 +425,8 @@ function withdraw($config, $userId, $amountToSend) {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = "SELECT tipping,address FROM users WHERE user_id = '$userId'";
-    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :userId");
+    $sql = "SELECT tipping, address FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT tipping, address FROM users WHERE user_id = :userId");
     $stmt->bindParam(':userId', $userId);
     $stmt->execute();
     $row = $stmt->fetch();
