@@ -428,7 +428,7 @@ function anonUserId($userId) {
 ###############
 #RPC FUNCTIONS#
 ###############
-function doRpcCall($config, $json) {
+function doRpcCallOld($config, $json) {
   $user = $config['rpcuser'];
   $password = $config['rpcpass'];
   $port = $config['rpcport'];
@@ -436,9 +436,9 @@ function doRpcCall($config, $json) {
 
   $opts = array(
     'http' => array(
-      'method' => 'POST',
-      'header' => 'Content-Type: text/plain',
-      'auth'   => [
+      'method'  => 'POST',
+      'headers' => ['Content-Type' => 'text/plain'],
+      'auth'    => [
         $user,
         $password
       ],
@@ -457,6 +457,47 @@ function doRpcCall($config, $json) {
     return $request;
   }
 }
+
+function doRpcCall($config, $json){
+  $user = $config['rpcuser'];
+  $password = $config['rpcpass'];
+  $port = $config['rpcport'];
+  $address = $config['rpcaddress'];
+
+  $ch = curl_init();
+  $headers = array();
+  $headers[] = "Content-Type: text/plain";
+  curl_setopt($ch, CURLOPT_URL, "http://$address:$port/");
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERPWD, "$user:$password");
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+  curl_setopt($ch, CURLOPT_POST, 1);
+  curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+  curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+  $result = curl_exec($ch);
+  if (curl_errno($ch)) {
+    notifyOnException('Error on RPC', $config, '', curl_error($ch));
+    curl_close ($ch);
+    return FALSE;
+  }
+  else {
+    curl_close ($ch);
+    return $result;
+  }
+
+}
+/*
+function execute(Command $command): ResponseInterface
+{
+  return $this->httpClient->request('POST', $this->rpc->getAddress(), [
+    'headers' => [
+      'Content-Type' => 'text/plain'
+    ],
+    'auth' => [ $this->rpc->getUser(), $this->rpc->getPassword() ],
+    'json' => $command
+  ]);
+}
+*/
 
 function getNewAddress($config) {
   $command = 'getnewaddress';
