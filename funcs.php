@@ -421,11 +421,11 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   return TRUE;
 }
 
-function withdraw($config, $userId, $amountToSend){
+function withdraw($config, $userId, $amountToSend) {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = "SELECT tipping FROM users WHERE user_id = '$userId'";
+    $sql = "SELECT tipping,address FROM users WHERE user_id = '$userId'";
     $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :userId");
     $stmt->bindParam(':userId', $userId);
     $stmt->execute();
@@ -435,31 +435,13 @@ function withdraw($config, $userId, $amountToSend){
   }
   if (!empty($row) && !empty($row['tipping'])) {
     $withdrawFrom = $row['tipping'];
-  }
-  else {
-    return 'no_balance';
-  }
-  try {
-    $sql = "SELECT address FROM users WHERE user_id = '$userId'";
-    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
-    $stmt->bindParam(':userId', $userId);
-    $stmt->execute();
-    $row = $stmt->fetch();
-  } catch (PDOException $e) {
-    notifyOnException('Database Select', $config, $sql, $e);
-  }
-  if (!empty($row)) {
-    if (!empty($row['address'])) {
-      $withdrawTo = $row['address'];
-    }
-    else{
+    $withdrawTo = $row['address'];
+    if(empty($withdrawTo)){
       return 'no_withdraw';
     }
-  }
-  else {
+  } else {
     return 'no_balance';
   }
-
   $currentBalance = z_getBalance($config, $withdrawFrom);
   if ($currentBalance === FALSE) {
     notifyOnException('Check balance on send', $config);
@@ -467,7 +449,8 @@ function withdraw($config, $userId, $amountToSend){
   }
   if ($currentBalance >= ($config['fee'] + $amountToSend)) {
     if (sendMany($config, $withdrawFrom, $withdrawTo, $amountToSend, $currentBalance) === FALSE) {
-      return 'error';
+      notifyOnException('Send', $config);
+      return FALSE;
     }
   }
   else {
@@ -572,9 +555,12 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $change = $currentBalance - $amount - $config['fee'];
 
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
-  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}]]}';
-
-  //PDO bindParam like string building. Couldn't find a function for doing it so I jsut did it like this, looks much cleaner than weird ' . $var . ' stuff.
+  if ($change == 0) {
+    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}]]}';
+  } else {
+    $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}]]}';
+  }
+  //PDO bindParam like string building. Couldn't find a function for doing it so I just did it like this, looks much cleaner than weird ' . $var . ' stuff.
   $json = str_replace('$command', $command, $json);
   $json = str_replace('$fromAddr', $fromAddr, $json);
   $json = str_replace('$toAddr', $toAddr, $json);
@@ -585,8 +571,7 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
     return FALSE;
-  }
-  else {
+  } else {
     $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
