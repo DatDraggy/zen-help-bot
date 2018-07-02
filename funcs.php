@@ -482,8 +482,12 @@ function doRpcCall($config, $json){
   }
   else {
     curl_close ($ch);
-    //mail($config['mail'], 'Test', print_r($result, true));
-    //die();
+    mail($config['mail'], 'Test', print_r($result, true));
+    ob_start();
+    var_dump($result);
+    $result = ob_get_clean();
+    mail($config['mail'], 'Test', $result);
+    die();
     return $result;
   }
 
