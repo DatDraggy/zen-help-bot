@@ -436,7 +436,7 @@ function withdraw($config, $userId, $amountToSend) {
   if (!empty($row) && !empty($row['tipping'])) {
     $withdrawFrom = $row['tipping'];
     $withdrawTo = $row['address'];
-    if(empty($withdrawTo)){
+    if (empty($withdrawTo)) {
       return 'no_withdraw';
     }
   } else {
@@ -451,13 +451,12 @@ function withdraw($config, $userId, $amountToSend) {
     if (sendMany($config, $withdrawFrom, $withdrawTo, $amountToSend, $currentBalance) === FALSE) {
       notifyOnException('Send', $config);
       return FALSE;
+    } else {
+      return TRUE;
     }
-  }
-  else {
+  } else {
     return 'no_balance';
   }
-
-  return TRUE;
 }
 
 function anonUserId($userId) {
@@ -557,15 +556,20 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
   if ($change == 0) {
     $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}]]}';
+    $json = str_replace('$command', $command, $json);
+    $json = str_replace('$fromAddr', $fromAddr, $json);
+    $json = str_replace('$toAddr', $toAddr, $json);
+    $json = str_replace('$amount', $amount, $json);
   } else {
     $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}]]}';
+    $json = str_replace('$command', $command, $json);
+    $json = str_replace('$fromAddr', $fromAddr, $json);
+    $json = str_replace('$toAddr', $toAddr, $json);
+    $json = str_replace('$amount', $amount, $json);
+    $json = str_replace('$change', $change, $json);
   }
   //PDO bindParam like string building. Couldn't find a function for doing it so I just did it like this, looks much cleaner than weird ' . $var . ' stuff.
-  $json = str_replace('$command', $command, $json);
-  $json = str_replace('$fromAddr', $fromAddr, $json);
-  $json = str_replace('$toAddr', $toAddr, $json);
-  $json = str_replace('$amount', $amount, $json);
-  $json = str_replace('$change', $change, $json);
+
 
 
   $response = doRpcCall($config, $json);
