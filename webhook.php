@@ -296,6 +296,7 @@ Your current address is ' . $address;
     break;
 
   case '/tip':
+    die();
     if ($chatType === 'private') {
       sendMessage($chatId, "
 Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
@@ -325,7 +326,7 @@ Usage: <code>/tip</code> <b>amount</b>
               }
             }
             else {
-              sendMessage($chatId, "Because of security reasons you can't send more than 1 ZEN.", '', $messageId);
+              sendMessage($chatId, "For security reasons you can't tip more than 1 ZEN.", '', $messageId);
             }
           }
         }
@@ -339,6 +340,7 @@ Usage: <code>/tip</code> <b>amount</b>
     break;
 
   case '/deposit':
+    die();
     if ($chatType === 'private') {
       $address = 'Feature Disabled';
       //$address = getDepositAddress($senderUserId);
@@ -353,6 +355,7 @@ When sending tips, a fee of $fee will be substracted from your balance.");
     break;
 
   case '/withdraw':
+    die();
     if ($chatType === 'private' && empty($messageArr[1])) {
       $amount = $messageArr[1];
       //function withdraw($senderUserId, $amount);
