@@ -504,8 +504,8 @@ function execute(Command $command): ResponseInterface
 function getNewAddress($config) {
   $command = 'getnewaddress';
 
-  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': []}";
-  $json = '{"jsonrpc": "1.0", "id":"curl", "method": "getnewaddress", "params": [] }';
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': 'getnewaddress', 'params': [] }";
+  //$json = '{"jsonrpc": "1.0", "id": "curl", "method": "getnewaddress", "params": [] }';
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
