@@ -290,7 +290,8 @@ Your current address is ' . $address;
       if ($balance === FALSE) {
       }
       else {
-        sendMessage($chatId, "Your current balance is: $balance");
+        sendMessage($chatId, "Your current balance is: $balance
+(If your address sent or received ZEN a short time ago this will show as 0.00000000)");
       }
     }
     break;
@@ -299,6 +300,7 @@ Your current address is ' . $address;
     if ($chatType === 'private') {
       sendMessage($chatId, "
 Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
+After tipping someone you have to wait for the transaction to be confirmed.
 
 Usage: <code>/tip</code> <b>amount</b>
 
@@ -318,7 +320,7 @@ Usage: <code>/tip</code> <b>amount</b>
               if ($tipResult === FALSE) {
               }
               else if ($tipResult === 'no_balance') {
-                sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", '', $messageId);
+                //sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", '', $messageId);
               }
               else if ($tipResult === TRUE) {
                 sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", '', $messageIdToReplyTo);

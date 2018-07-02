@@ -13,6 +13,7 @@
 - [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
 - [X] Roi calculator [for 10% block]
+- [ ] Improved /tip for better tipping (Main problem: unable to tip while balance being confirmed)
 
 
 #### Donations
