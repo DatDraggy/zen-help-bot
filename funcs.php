@@ -543,7 +543,7 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
     return FALSE;
   }
   else {
-    $jsondec = json_decode($response);
+    $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
 }
@@ -561,7 +561,7 @@ function z_getBalance($config, $tipping) {
     return FALSE;
   }
   else {
-    $jsondec = json_decode($response);
+    $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
 }
