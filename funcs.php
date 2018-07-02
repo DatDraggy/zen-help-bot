@@ -483,6 +483,7 @@ function doRpcCall($config, $json){
   else {
     curl_close ($ch);
     mail($config['mail'], 'Test', print_r($result, true));
+    die();
     return $result;
   }
 
