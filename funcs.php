@@ -505,7 +505,8 @@ function getNewAddress($config) {
   $command = 'getnewaddress';
 
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': 'getnewaddress', 'params': [] }";
-  //$json = '{"jsonrpc": "1.0", "id": "curl", "method": "getnewaddress", "params": [] }';
+  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": [] }';
+  $json = str_replace('$command', $command, $json);
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
@@ -522,6 +523,15 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $change = $currentBalance - $amount - $config['fee'];
 
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
+  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}, {"address": "$fromAddr", "amount": $change}]]}';
+
+  //PDO bindParam like string building. Couldn't find a function for doing it so I jsut did it like this, looks much cleaner than weird ' . $var . ' stuff.
+  $json = str_replace('$command', $command, $json);
+  $json = str_replace('$fromAddr', $fromAddr, $json);
+  $json = str_replace('$toAddr', $toAddr, $json);
+  $json = str_replace('$amount', $amount, $json);
+  $json = str_replace('$change', $change, $json);
+
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
@@ -536,7 +546,10 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
 function z_getBalance($config, $tipping) {
   $command = 'z_getbalance';
 
-  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': $command, 'params': ['$tipping'] }";
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$tipping'] }";
+  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$tipping"] }';
+  $json = str_replace('$command', $command, $json);
+  $json = str_replace('$tipping', $tipping, $json);
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
