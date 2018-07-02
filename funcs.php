@@ -168,7 +168,7 @@ function getScoreboard() {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
-    $sql = 'SELECT name, username, score FROM users WHERE score <> 0 ORDER BY score DESC LIMIT 3';
+    $sql = 'SELECT name, username, score FROM users WHERE score <> 0 ORDER BY score DESC LIMIT 5';
     foreach ($dbConnection->query($sql) as $row) {
       if (empty($row['username'])) {
         $scoreboard .= '
