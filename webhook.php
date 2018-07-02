@@ -361,7 +361,7 @@ When sending tips, a fee of $fee will be substracted from your balance.");
         if ($result === FALSE) {
         }
         else if ($result === 'no_balance') {
-
+          sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.");
         }
         else if ($result === 'no_withdraw') {
           sendMessage($chatId, "There is no withdrawal address asociated with your account. 
