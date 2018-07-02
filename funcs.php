@@ -481,13 +481,14 @@ function doRpcCall($config, $json){
     return FALSE;
   }
   else {
-    curl_close ($ch);
+    /*curl_close ($ch);
     mail($config['mail'], 'Test', print_r($result, true));
     ob_start();
     var_dump($result);
     $result = ob_get_clean();
     mail($config['mail'], 'Test', $result);
-    die();
+    die();*/
+    curl_close ($ch);
     return $result;
   }
 
@@ -517,7 +518,7 @@ function getNewAddress($config) {
     return FALSE;
   }
   else {
-    $jsondec = json_decode($response);
+    $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
 }
