@@ -356,8 +356,19 @@ When sending tips, a fee of $fee will be substracted from your balance.");
   case '/withdraw':
     if ($chatType === 'private' && empty($messageArr[1])) {
       $amount = $messageArr[1];
-      //function withdraw($senderUserId, $amount);
-      sendMessage($chatId, "Success. Your $amount ZEN are now on their way to your /myaddress address.");
+      $result = withdraw($config, $senderUserId, $amount);
+      if ($result === FALSE) {
+      }
+      else if ($result === 'no_balance') {
+
+      }
+      else if ($result === 'no_withdraw') {
+        sendMessage($chatId, "There is no withdrawal address asociated with your account. 
+You can add one with /myaddress.");
+      }
+      else if ($result === TRUE) {
+        sendMessage($chatId, "Success. Your $amount ZEN are now on their way to your /myaddress address.");
+      }
     }
     break;
 

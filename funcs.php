@@ -421,6 +421,62 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   return TRUE;
 }
 
+function withdraw($config, $userId, $amountToSend){
+  global $config;
+  $dbConnection = buildDatabaseConnection($config);
+  try {
+    $sql = "SELECT tipping FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT tipping FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    notifyOnException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row) && !empty($row['tipping'])) {
+    $withdrawFrom = $row['tipping'];
+  }
+  else {
+    return 'no_balance';
+  }
+  try {
+    $sql = "SELECT address FROM users WHERE user_id = '$userId'";
+    $stmt = $dbConnection->prepare("SELECT address FROM users WHERE user_id = :userId");
+    $stmt->bindParam(':userId', $userId);
+    $stmt->execute();
+    $row = $stmt->fetch();
+  } catch (PDOException $e) {
+    notifyOnException('Database Select', $config, $sql, $e);
+  }
+  if (!empty($row)) {
+    if (!empty($row['address'])) {
+      $withdrawTo = $row['address'];
+    }
+    else{
+      return 'no_withdraw';
+    }
+  }
+  else {
+    return 'no_balance';
+  }
+
+  $currentBalance = z_getBalance($config, $withdrawFrom);
+  if ($currentBalance === FALSE) {
+    notifyOnException('Check balance on send', $config);
+    return FALSE;
+  }
+  if ($currentBalance >= ($config['fee'] + $amountToSend)) {
+    if (sendMany($config, $withdrawFrom, $withdrawTo, $amountToSend, $currentBalance) === FALSE) {
+      return 'error';
+    }
+  }
+  else {
+    return 'no_balance';
+  }
+
+  return TRUE;
+}
+
 function anonUserId($userId) {
   return substr($userId, '0', strlen($userId) - 3);
 }
