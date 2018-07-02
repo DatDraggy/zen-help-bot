@@ -311,7 +311,7 @@ Usage: <code>/tip</code> <b>amount</b>
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
           //If is int
-          if (is_int($tip) && $tip > 0) {
+          if (is_float($tip) && $tip > 0) {
             // /tip 0.1
             if ($tip <= 1) {
               $tipResult = sendTipToMessage($senderUserId, $repliedToUserId, $messageArr[1]);
@@ -355,7 +355,7 @@ When sending tips, a fee of $fee will be substracted from your balance.");
 
   case '/withdraw':
     if ($chatType === 'private') {
-      if(!empty($messageArr[1])) {
+      if(!empty($messageArr[1]) && is_float($messageArr[1])) {
         $amount = $messageArr[1];
         $result = withdraw($config, $senderUserId, $amount);
         if ($result === FALSE) {
