@@ -551,10 +551,10 @@ function getNewAddress($config) {
 
 function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $command = 'z_sendmany';
-  $change = $currentBalance - $amount - $config['fee'];
+  $change = number_format($currentBalance - $amount - $config['fee'], 8);
 
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$fromAddr', [{'address': '$toAddr', 'amount': $amount}, {'address': '$fromAddr', 'amount': $change}]]}";
-  if ($change == 0) {
+  if ($change <= 0) {
     $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$fromAddr", [{"address": "$toAddr", "amount": $amount}]]}';
     $json = str_replace('$command', $command, $json);
     $json = str_replace('$fromAddr', $fromAddr, $json);
