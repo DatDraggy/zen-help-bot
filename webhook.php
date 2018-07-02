@@ -214,7 +214,7 @@ https://support.zencash.com', '', $messageIdToReplyTo);
   case '/thanks':
     if ($chatType === 'private') {
       sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
-Their thank-score will be raised which will hopefully encourage in more people helping.');
+Their thank-score will increase which will hopefully encourage in more people helping.');
     }
     else {
       if (isset($repliedToMessageId)) {
@@ -336,14 +336,13 @@ Usage: <code>/tip</code> <b>amount</b>
         }
       }
     }
-
     break;
 
   case '/deposit':
     if ($chatType === 'private') {
       $address = 'Feature Disabled';
       $address = getDepositAddress($senderUserId);
-
+      zlog('/deposit', 'Requested depo addr for ' . anonUserId($senderUserId));
       sendMessage($chatId, "
 This is your deposit address:
 <b>$address</b>
@@ -358,6 +357,7 @@ When sending tips, a fee of $fee will be substracted from your balance.");
       if(!empty($messageArr[1]) && is_numeric($messageArr[1])) {
         $amount = $messageArr[1];
         $result = withdraw($config, $senderUserId, $amount);
+
         if ($result === FALSE) {
         }
         else if ($result === 'no_balance') {
@@ -369,6 +369,7 @@ You can add one with /myaddress.");
         }
         else if ($result === TRUE) {
           sendMessage($chatId, "Success. Your $amount ZEN are now on their way to your /myaddress address.");
+          zlog('/withdraw', 'Withdraw ' . $amount . ' from ' . anonUserId($senderUserId));
         }
       }
       else{
@@ -389,7 +390,7 @@ Usage: <code>/withdraw</code> <b>amount</b>
 
   case '/id':
     if ($chatType === 'private') {
-      sendMessage($chatId, $chatId);
+      sendMessage($chatId, $chatId . ' ' . $senderUserId);
     }
     break;
   case '/testdev':
