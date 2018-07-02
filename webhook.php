@@ -305,7 +305,7 @@ Usage: <code>/tip</code> <b>amount</b>
 /tip 0.1");
       die();
     }
-    if (!empty($messageArr[1])) {
+    if (!empty($messageArr[1]) && isset($repliedToUserId)) {
       if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
