@@ -286,7 +286,7 @@ Your current address is ' . $address;
      * sendMessage
      */
     if ($chatType === 'private') {
-      $balance = getBalance($senderUserId);
+      $balance = number_format(getBalance($senderUserId), 8);
       if ($balance === FALSE) {
       }
       else {

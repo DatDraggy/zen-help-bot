@@ -493,18 +493,6 @@ function doRpcCall($config, $json){
   }
 
 }
-/*
-function execute(Command $command): ResponseInterface
-{
-  return $this->httpClient->request('POST', $this->rpc->getAddress(), [
-    'headers' => [
-      'Content-Type' => 'text/plain'
-    ],
-    'auth' => [ $this->rpc->getUser(), $this->rpc->getPassword() ],
-    'json' => $command
-  ]);
-}
-*/
 
 function getNewAddress($config) {
   $command = 'getnewaddress';
