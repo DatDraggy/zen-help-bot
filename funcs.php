@@ -482,6 +482,7 @@ function doRpcCall($config, $json){
   }
   else {
     curl_close ($ch);
+    return print_r($result, true);
     return $result;
   }
 
