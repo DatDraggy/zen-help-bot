@@ -475,15 +475,15 @@ function doRpcCall($config, $json){
   curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
   curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
   $result = curl_exec($ch);
-  if (curl_errno($ch)) {
+  if (curl_errno($ch) || $result === FALSE || empty($result)) {
     notifyOnException('Error on RPC', $config, '', curl_error($ch));
     curl_close ($ch);
     return FALSE;
   }
   else {
     curl_close ($ch);
-    mail($config['mail'], 'Test', print_r($result, true));
-    die();
+    //mail($config['mail'], 'Test', print_r($result, true));
+    //die();
     return $result;
   }
 
