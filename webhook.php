@@ -258,7 +258,7 @@ Your current address is ' . $address;
   case '/scoreboard':
     if ($chatType === 'private') {
       $scoreboard = getScoreboard();
-      sendMessage($chatId, 'These are the top 3 people with the most thanks received:
+      sendMessage($chatId, 'These are the top 5 people with the most thanks received:
 ' . $scoreboard);
     }
     break;
