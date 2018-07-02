@@ -296,7 +296,6 @@ Your current address is ' . $address;
     break;
 
   case '/tip':
-    die();
     if ($chatType === 'private') {
       sendMessage($chatId, "
 Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
@@ -306,7 +305,7 @@ Usage: <code>/tip</code> <b>amount</b>
 /tip 0.1");
       die();
     }
-    if (empty($messageArr[1])) {
+    if (!empty($messageArr[1])) {
       if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
@@ -315,7 +314,7 @@ Usage: <code>/tip</code> <b>amount</b>
             // /tip 0.1
             if ($tip <= 1) {
               $tipResult = sendTipToMessage($senderUserId, $repliedToUserId, $messageArr[1]);
-              zlog('/myaddress', 'User ' . anonUserId($senderUserId) . ' sent tip ' . $tip . ' to ' . anonUserId($repliedToUserId));
+              zlog('/tip', 'User ' . anonUserId($senderUserId) . ' sent tip ' . $tip . ' to ' . anonUserId($repliedToUserId));
               if ($tipResult === FALSE) {
               }
               else if ($tipResult === 'no_balance') {
@@ -354,7 +353,7 @@ When sending tips, a fee of $fee will be substracted from your balance.");
 
   case '/withdraw':
     if ($chatType === 'private') {
-      if(!empty($messageArr[1]) && is_numeric($messageArr[1])) {
+      if(!empty($messageArr[1]) && is_numeric($messageArr[1]) && $messageArr[1] > 0) {
         $amount = $messageArr[1];
         $result = withdraw($config, $senderUserId, $amount);
 
