@@ -329,7 +329,7 @@ function getBalance($userId) {
     $tippingAddress = $row['tipping'];
   }
   else {
-    return '0.00000000';
+    return '0';
   }
   //Use insight api maybe?
   return z_getBalance($config, $tippingAddress);

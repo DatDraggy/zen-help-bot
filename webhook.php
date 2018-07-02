@@ -354,7 +354,6 @@ When sending tips, a fee of $fee will be substracted from your balance.");
     break;
 
   case '/withdraw':
-    die();
     if ($chatType === 'private' && empty($messageArr[1])) {
       $amount = $messageArr[1];
       //function withdraw($senderUserId, $amount);
