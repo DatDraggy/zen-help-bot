@@ -3,7 +3,7 @@
 - [ ] How to mine
 - [ ] zengroups Languages
 - [ ] /community: Discord twitter etc
-- [ ] Improved /tip for better tipping (Main problem: unable to tip while balance being confirmed)
+- [ ] Improve /tip for better tipping (Main problem: unable to tip while balance being confirmed)
 
 
 #### Donations
