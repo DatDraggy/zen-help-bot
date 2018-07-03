@@ -1,18 +1,8 @@
 ### ToDo List
 - [ ] Clean up database queries (Ideas pls)
-- [X] securenodesreward: Calculate weekly, monthly
-- [X] zenadmins
-- [X] Wallet types
-- [X] Zen helpdesk
-- [X] Zen faucet
 - [ ] How to mine
 - [ ] zengroups Languages
-- [X] Thanks-rep system
-- [X] Add thanks address
-- [X] Get thanks
-- [X] Thanks scoreboard
 - [ ] /community: Discord twitter etc
-- [X] Roi calculator [for 10% block]
 - [ ] Improved /tip for better tipping (Main problem: unable to tip while balance being confirmed)
 
 
