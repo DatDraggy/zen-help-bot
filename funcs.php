@@ -568,8 +568,6 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   $json = str_replace('$fee', $config['fee'], $json);
   //PDO bindParam like string building. Couldn't find a function for doing it so I just did it like this, looks much cleaner than weird ' . $var . ' stuff.
 
-mail($config['mail'], 'Test', $json);
-
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
     return FALSE;
