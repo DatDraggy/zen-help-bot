@@ -13,9 +13,9 @@ function getCurrentReward() {
   $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc');
   $data = json_decode($json, true);
   $secNodesAmount = $data['userdata']['global']['up'];
-  $estEarnMonthly = $zenMinedPerMonth * '0.1' / $secNodesAmount;
-  $estEarnDaily = $estEarnMonthly / 30;
-  $estEarnYearly = $estEarnMonthly * 12;
+  $estEarnMonthly = number_format($zenMinedPerMonth * '0.1' / $secNodesAmount, 8);
+  $estEarnDaily = number_format($estEarnMonthly / 30, 8);
+  $estEarnYearly = number_format($estEarnMonthly * 12, 8);
   return "Current reward per day: $estEarnDaily
 Reward per month: $estEarnMonthly
 Reward per Year: $estEarnYearly";
