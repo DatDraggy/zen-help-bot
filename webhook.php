@@ -141,7 +141,6 @@ Here is a small list of available commands. Click them to find out what they say
 /thanks
 /scoreboard
 /mythanks
-/myaddress
 /51
 /roi
 /deposit
@@ -152,6 +151,7 @@ Commands that require parameters: (click to see usage)
 /withdraw
 /tip
 /thanks
+/myaddress
 
 <code>Text</code> - Indicates a command name
 <b>Text</b> - Required parameter
@@ -323,6 +323,9 @@ Usage: <code>/tip</code> <b>amount</b>
                 //sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", '', $messageId);
               }
               else if ($tipResult === TRUE) {
+                if($senderUsername === NULL){
+                  $senderUsername = $senderName;
+                }
                 sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", '', $messageIdToReplyTo);
               }
             }
