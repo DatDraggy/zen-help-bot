@@ -113,7 +113,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     //Updating usernames and score+1
     try {
       $sql = "UPDATE users SET name='$repliedToName', username='$repliedToUsername', score=score+1 WHERE user_id = '$repliedToUserId'";
-      $stmt = $dbConnection->prepare("UPDATE users SET name='$repliedToName', username='$repliedToUsername', score=score+1 WHERE user_id = :repliedToUserId");
+      $stmt = $dbConnection->prepare("UPDATE users SET name=:repliedToName, username=:repliedToUsername, score=score+1 WHERE user_id = :repliedToUserId");
       $stmt->bindParam(':repliedToUserId', $repliedToUserId);
       $stmt->bindParam(':repliedToName', $repliedToName);
       $stmt->bindParam(':repliedToUsername', $repliedToUsername);
