@@ -105,25 +105,15 @@ You can see the current daily reward for a secure node here: https://securenodes
 We do not have masternodes. ' . $nodeText . '
 ', '', $messageIdToReplyTo);
     break;
-  case '/tipbot':
-    if ($chatType === 'private') {
-      sendMessage($chatId, '
-These are all commands associated with the tipping bot.
 
-/deposit - Get your tipping address to stock up your balance
-/withdraw - Withdraw your tipping ZEN to your /myaddress
-/tip - Tip a user
-/mybalance - Get your tipping balance
-');
-    }
-    break;
   case '/zencommands':
   case '/zenhelp':
   case '/zenhelp@ZenCashHelp_bot':
     if ($chatType === 'private') {
       sendMessage($chatId, '
-Here is a small list of available commands. Click them to find out what they say.
+Here is a list of available commands. Click them to find out what they do.
 
+Knowledge Commands (click to get info):
 /zenprice
 /zengroups
 /start
@@ -138,20 +128,22 @@ Here is a small list of available commands. Click them to find out what they say
 /wallets
 /freezen
 /helpdesk
-/thanks
-/scoreboard
-/mythanks
 /51
 /roi
 /deposit
-/mybalance
-/tipbot
 
-Commands that require parameters: (click to see usage)
+Reputationsystem:
+/thanks
+/scoreboard
+/mythanks
+
+Tippingbot:
+How to use: /tipbot
 /withdraw
 /tip
-/thanks
 /myaddress
+/mybalance
+
 
 <code>Text</code> - Indicates a command name
 <b>Text</b> - Required parameter
@@ -268,7 +260,7 @@ Your current address is ' . $address;
 ' . $infos['groups']);
     break;
   case '/51':
-    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/', '', $messageIdToReplyTo);
+    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. This will soon be not possible anymore. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/', '', $messageIdToReplyTo);
     break;
   case '/community':
     break;
@@ -385,6 +377,18 @@ Usage: <code>/withdraw</code> <b>amount</b>
 /withdraw 0.1");
         die();
       }
+    }
+    break;
+
+  case '/tipbot':
+    if ($chatType === 'private') {
+      sendMessage($chatId, '
+To use the tipping bot you have to get your deposit address by using /deposit. 
+Send some ZEN to this address and wait for the transaction to confirm. Do /mybalance to see if your ZEN arrived.
+Once you have a balance, simply reply to a users message in a group chat with /tip as seen on the screenshot <a href="https://puu.sh/ATVvn/d765ac3c3d.png">here</a>.
+To withdraw your tips or balance you\'ll firstly have to use /myaddress to set a withdrawal address.
+Then, simply use /withdraw with the amount behind. `/withdraw 0.1` would withdraw 0.0999 from your tipping address and send it to the address you set with /myaddress
+');
     }
     break;
 
