@@ -92,11 +92,27 @@ More info can be found here: https://zencash.com/securenodes
     break;
 
   case '/securenodesreward':
-    //ToDo: Add calculations
-    sendMessage($chatId, getCurrentReward() . '
+    sendMessage($chatId, getCurrentSecureReward() . '
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
+', '', $messageIdToReplyTo);
+    break;
+
+  case '/supernode':
+  case '/supernodes':
+    sendMessage($chatId, '
+For a super node, you need 500 ZEN and a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
+
+More info can be found here: https://zencash.com/supernodes 
+', '', $messageIdToReplyTo);
+    break;
+
+  case '/supernodesreward':
+    sendMessage($chatId, getCurrentSuperReward() . '
+
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
+You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
 ', '', $messageIdToReplyTo);
     break;
 
@@ -120,6 +136,8 @@ Knowledge Commands (click to get info):
 /nodes
 /securenodes
 /securenodesreward
+/supernodes
+/supernodesreward
 /masternodes
 /zencommands
 /zenhelp
@@ -129,7 +147,8 @@ Knowledge Commands (click to get info):
 /freezen
 /helpdesk
 /51
-/roi
+/securenoderoi
+/supernoderoi
 /deposit
 
 Reputationsystem:
@@ -264,8 +283,12 @@ Your current address is ' . $address;
     break;
   case '/community':
     break;
-  case '/roi':
-    $roiMessage = calculateRoi();
+  case '/securenoderoi':
+    $roiMessage = calculateSecureRoi();
+    sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
+    break;
+  case '/supernoderoi':
+    $roiMessage = calculateSuperRoi();
     sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
     break;
   /*

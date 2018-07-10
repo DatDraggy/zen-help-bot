@@ -6,14 +6,29 @@ function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
   //Might use http_build_query in the future
 }
 
-function getCurrentReward() {
+function getCurrentSecureReward() {
   //https://docs.google.com/spreadsheets/d/18EpBevxlpQFAxYN0YY-UvSBUGp-qyzLniahz5nwLiz4/
   $zenMinedPerMonth = 216000;
 
-  $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc');
+  $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false');
   $data = json_decode($json, true);
   $secNodesAmount = $data['userdata']['global']['up'];
   $estEarnMonthly = number_format($zenMinedPerMonth * '0.1' / $secNodesAmount, 8);
+  $estEarnDaily = number_format($estEarnMonthly / 30, 8);
+  $estEarnYearly = number_format($estEarnMonthly * 12, 8);
+  return "Current reward per day: $estEarnDaily
+Reward per month: $estEarnMonthly
+Reward per Year: $estEarnYearly";
+}
+
+function getCurrentSuperReward() {
+  //https://docs.google.com/spreadsheets/d/18EpBevxlpQFAxYN0YY-UvSBUGp-qyzLniahz5nwLiz4/
+  $zenMinedPerMonth = 216000;
+
+  $json = file_get_contents('https://supernodes.eu.zensystem.io/api/grid/nodes?_search=false');
+  $data = json_decode($json, true);
+  $supNodesAmount = $data['userdata']['global']['up'];
+  $estEarnMonthly = number_format($zenMinedPerMonth * '0.1' / $supNodesAmount, 8);
   $estEarnDaily = number_format($estEarnMonthly / 30, 8);
   $estEarnYearly = number_format($estEarnMonthly * 12, 8);
   return "Current reward per day: $estEarnDaily
@@ -249,8 +264,8 @@ function zlog($func, $data) {
   file_put_contents('log.txt', $putData, FILE_APPEND | LOCK_EX);
 }
 
-function calculateRoi() {
-  $amountNodes = json_decode(file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false&nd=1523005688441&rows=1&page=1&sidx=fqdn&sord=asc'), true)['userdata']['global']['up'];
+function calculateSecureRoi() {
+  $amountNodes = json_decode(file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false'), true)['userdata']['global']['up'];
   $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
@@ -263,6 +278,28 @@ function calculateRoi() {
   $annualProfitZen = $annualProfit / $valueUsd;
   $roi = number_format($annualProfitZen / 42 * 100, 2);
   $roiText = "Rough Secure Node ROI: $roi%
+
+ZEN Value in Dollars: $$valueUsd
+VPS Cost: $" . number_format($vpsCost, 2) . "
+Amount of Nodes: $amountNodes
+Keep in mind that this is only theoretically and the amount of nodes can raise/fall at any time.";
+  return $roiText;
+}
+
+function calculateSuperRoi() {
+  $amountNodes = json_decode(file_get_contents('https://supernodes.eu.zensystem.io/api/grid/nodes?_search=false'), true)['userdata']['global']['up'];
+  $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
+  $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
+  $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
+  $minedPerMonth = 216000;
+  $vpsCost = 25.00;
+  $monthlyRewardZen = $minedPerMonth * 0.1 / $amountNodes;
+  $monthlyReward = $monthlyRewardZen * $valueUsd;
+  $monthlyProfit = $monthlyReward - $vpsCost;
+  $annualProfit = $monthlyProfit * 12;
+  $annualProfitZen = $annualProfit / $valueUsd;
+  $roi = number_format($annualProfitZen / 42 * 100, 2);
+  $roiText = "Rough Super Node ROI: $roi%
 
 ZEN Value in Dollars: $$valueUsd
 VPS Cost: $" . number_format($vpsCost, 2) . "
