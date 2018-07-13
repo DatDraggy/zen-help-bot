@@ -92,11 +92,27 @@ More info can be found here: https://zencash.com/securenodes
     break;
 
   case '/securenodesreward':
-    //ToDo: Add calculations
-    sendMessage($chatId, getCurrentReward() . '
+    sendMessage($chatId, getCurrentSecureReward() . '
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
+', '', $messageIdToReplyTo);
+    break;
+
+  case '/supernode':
+  case '/supernodes':
+    sendMessage($chatId, '
+For a super node, you need 500 ZEN and a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
+
+More info can be found here: https://zencash.com/supernodes 
+', '', $messageIdToReplyTo);
+    break;
+
+  case '/supernodesreward':
+    sendMessage($chatId, getCurrentSuperReward() . '
+
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
+You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
 ', '', $messageIdToReplyTo);
     break;
 
@@ -108,7 +124,7 @@ We do not have masternodes. ' . $nodeText . '
 
   case '/zencommands':
   case '/zenhelp':
-  case '/zenhelp@ZenCashHelp_bot':
+  case '/zenhelp@' . $config['botName']:
     if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a list of available commands. Click them to find out what they do.
@@ -120,6 +136,8 @@ Knowledge Commands (click to get info):
 /nodes
 /securenodes
 /securenodesreward
+/supernodes
+/supernodesreward
 /masternodes
 /zencommands
 /zenhelp
@@ -129,7 +147,8 @@ Knowledge Commands (click to get info):
 /freezen
 /helpdesk
 /51
-/roi
+/securenoderoi
+/supernoderoi
 /deposit
 
 Reputationsystem:
@@ -156,7 +175,7 @@ How to use: /tipbot
           array(
             array(
               "text" => "/zencommands",
-              "url"  => "https://telegram.me/zencashhelp_bot?start=zencommands"
+              "url"  => "https://telegram.me/" . $config['botName'] . "?start=zencommands"
             )
           )
         )
@@ -264,8 +283,12 @@ Your current address is ' . $address;
     break;
   case '/community':
     break;
-  case '/roi':
-    $roiMessage = calculateRoi();
+  case '/securenoderoi':
+    $roiMessage = calculateSecureRoi();
+    sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
+    break;
+  case '/supernoderoi':
+    $roiMessage = calculateSuperRoi();
     sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
     break;
   /*
@@ -300,7 +323,7 @@ Usage: <code>/tip</code> <b>amount</b>
       die();
     }
     if (!empty($messageArr[1]) && isset($repliedToUserId)) {
-      if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
+      if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $config['botId']) {
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
           //If is int
@@ -397,9 +420,7 @@ Then, simply use /withdraw with the amount behind. `/withdraw 0.1` would withdra
    */
 
   case '/id':
-    if ($chatType === 'private') {
-      sendMessage($chatId, $chatId . ' ' . $senderUserId);
-    }
+    sendMessage($chatId, $chatId . ' ' . $senderUserId);
     break;
   case '/testdev':
     require_once('testdev.php');
