@@ -32,7 +32,7 @@ Users that received helpful advice can reply to the helping user with `/thanks` 
 
 Their own score can be seen by sending `/mythanks` to the bot in private. 
 
-There also is a scoreboard which can be seend by sending `/scoreboard` to the bot.
+There also is a scoreboard which can be seen by sending `/scoreboard` to the bot.
 The top 3 users with the most thanks qualify for a __special reward__ before the scoreboard is reset each month.
 
 That reward is sent to their `/deposit`-address and can be withdrawn like a tip would (`/withdraw`).
