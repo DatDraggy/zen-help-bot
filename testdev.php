@@ -1,2 +1,3 @@
 <?php
 die();
+echo 'test';
