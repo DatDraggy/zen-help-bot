@@ -8,6 +8,7 @@
 - [ ] Improve /tip for better tipping (Main problem: unable to tip while balance being confirmed)
 
 ## Usage
+All commands associated with making a transaction will have a 0.0001 network fee. Keep that in mind when tipping or withdrawing.
 #### Tipping
 This bot enables users to send tips to users they find helpful.
 
@@ -18,13 +19,23 @@ Once that balance has updated, the user can reply to the helpful message with `/
 
 If the user has enough funds, the bot will tell the helpful user in the group that they received a tip. If the funds are not enough (forgot to substract tip for example) nothing will happen.
 
-
-A user that received a tip can either use that tip to tip other users, or withdraw their tip to their balance. 
+#### Withdrawing
+A user that received a tip can either use that tip to tip other users, or withdraw their tip to their own address. 
 
 This can be done with `/myaddress` and `/withdraw`. Firstly, the user has to set their receiving address by using `/myaddress t-addr`.
 
 They can then use `/withdraw` with the amount following to withdraw their balance.
 
+#### Thanking
+The ZenBot also has a small reputation system built in.
+Users that received helpful advice can reply to the helping user with `/thanks` to increase their score.
+
+Their own score can be seen by sending `/mythanks` to the bot in private. 
+
+There also is a scoreboard which can be seend by sending `/scoreboard` to the bot.
+The top 3 users with the most thanks qualify for a __special reward__ before the scoreboard is reset each month.
+
+That reward is sent to their `/deposit`-address and can be withdrawn like a tip would (`/withdraw`).
 
 #### Donations
 ZenCash zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw

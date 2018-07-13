@@ -124,7 +124,7 @@ We do not have masternodes. ' . $nodeText . '
 
   case '/zencommands':
   case '/zenhelp':
-  case '/zenhelp@ZenCashHelp_bot':
+  case '/zenhelp@' . $config['botName']:
     if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a list of available commands. Click them to find out what they do.
@@ -175,7 +175,7 @@ How to use: /tipbot
           array(
             array(
               "text" => "/zencommands",
-              "url"  => "https://telegram.me/zencashhelp_bot?start=zencommands"
+              "url"  => "https://telegram.me/" . $config['botName'] . "?start=zencommands"
             )
           )
         )
@@ -323,7 +323,7 @@ Usage: <code>/tip</code> <b>amount</b>
       die();
     }
     if (!empty($messageArr[1]) && isset($repliedToUserId)) {
-      if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
+      if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $config['botId']) {
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
           //If is int
@@ -420,9 +420,7 @@ Then, simply use /withdraw with the amount behind. `/withdraw 0.1` would withdra
    */
 
   case '/id':
-    if ($chatType === 'private') {
-      sendMessage($chatId, $chatId . ' ' . $senderUserId);
-    }
+    sendMessage($chatId, $chatId . ' ' . $senderUserId);
     break;
   case '/testdev':
     require_once('testdev.php');
