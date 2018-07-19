@@ -6,6 +6,7 @@ require_once(__DIR__ . "/infos.php");
 $response = file_get_contents('php://input');
 $data = json_decode($response, true);
 $dump = print_r($data, true);
+http_response_code(200);
 
 $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
