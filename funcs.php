@@ -10,9 +10,9 @@ function getCurrentSecureReward() {
   //https://docs.google.com/spreadsheets/d/18EpBevxlpQFAxYN0YY-UvSBUGp-qyzLniahz5nwLiz4/
   $zenMinedPerMonth = 216000;
 
-  $json = file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false');
+  $json = file_get_contents('https://securenodes.zensystem.io/api/srvstats');
   $data = json_decode($json, true);
-  $secNodesAmount = $data['userdata']['global']['up'];
+  $secNodesAmount = $data['global']['up'];
   $estEarnMonthly = number_format($zenMinedPerMonth * '0.1' / $secNodesAmount, 8);
   $estEarnDaily = number_format($estEarnMonthly / 30, 8);
   $estEarnYearly = number_format($estEarnMonthly * 12, 8);
@@ -25,9 +25,9 @@ function getCurrentSuperReward() {
   //https://docs.google.com/spreadsheets/d/18EpBevxlpQFAxYN0YY-UvSBUGp-qyzLniahz5nwLiz4/
   $zenMinedPerMonth = 216000;
 
-  $json = file_get_contents('https://supernodes.eu.zensystem.io/api/grid/nodes?_search=false');
+  $json = file_get_contents('https://supernodes.zensystem.io/api/srvstats');
   $data = json_decode($json, true);
-  $supNodesAmount = $data['userdata']['global']['up'];
+  $supNodesAmount = $data['global']['up'];
   $estEarnMonthly = number_format($zenMinedPerMonth * '0.1' / $supNodesAmount, 8);
   $estEarnDaily = number_format($estEarnMonthly / 30, 8);
   $estEarnYearly = number_format($estEarnMonthly * 12, 8);
@@ -91,7 +91,6 @@ function buildDatabaseConnection($config) {
     $dbConnection = new PDO('mysql:dbname=' . $config['dbname'] . ';host=' . $config['dbserver'] . ';port=' . $config['dbport'] . ';charset=utf8mb4', $config['dbuser'], $config['dbpassword'], array(PDO::ATTR_TIMEOUT => 25));
     $dbConnection->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $dbConnection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $dbConnection->setAttribute(PDO::ATTR_TIMEOUT, 30);
   } catch (PDOException $e) {
     notifyOnException('Database Connection', $config, '', $e);
   }
@@ -266,7 +265,7 @@ function zlog($func, $data) {
 }
 
 function calculateSecureRoi() {
-  $amountNodes = json_decode(file_get_contents('https://securenodes.eu.zensystem.io/api/grid/nodes?_search=false'), true)['userdata']['global']['up'];
+  $amountNodes = json_decode(file_get_contents('https://securenodes.zensystem.io/api/srvstats'), true)['global']['up'];
   $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
@@ -288,7 +287,7 @@ Keep in mind that this is only theoretically and the amount of nodes can raise/f
 }
 
 function calculateSuperRoi() {
-  $amountNodes = json_decode(file_get_contents('https://supernodes.eu.zensystem.io/api/grid/nodes?_search=false'), true)['userdata']['global']['up'];
+  $amountNodes = json_decode(file_get_contents('https://supernodes.zensystem.io/api/srvstats'), true)['global']['up'];
   $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
