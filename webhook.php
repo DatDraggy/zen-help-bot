@@ -407,8 +407,11 @@ Usage: <code>/withdraw</code> <b>amount</b>
     if ($chatType === 'private') {
       sendMessage($chatId, '
 To use the tipping bot you have to get your deposit address by using /deposit. 
+
 Send some ZEN to this address and wait for the transaction to confirm. Do /mybalance to see if your ZEN arrived.
+
 Once you have a balance, simply reply to a users message in a group chat with /tip as seen on the screenshot <a href="https://puu.sh/ATVvn/d765ac3c3d.png">here</a>.
+
 To withdraw your tips or balance you\'ll firstly have to use /myaddress to set a withdrawal address.
 Then, simply use /withdraw with the amount behind. `/withdraw 0.1` would withdraw 0.0999 from your tipping address and send it to the address you set with /myaddress
 ');
