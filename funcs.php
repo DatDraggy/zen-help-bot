@@ -298,7 +298,7 @@ function calculateSuperRoi() {
   $monthlyProfit = $monthlyReward - $vpsCost;
   $annualProfit = $monthlyProfit * 12;
   $annualProfitZen = $annualProfit / $valueUsd;
-  $roi = number_format($annualProfitZen / 42 * 100, 2);
+  $roi = number_format($annualProfitZen / 500 * 100, 2);
   $roiText = "Rough Super Node ROI: $roi%
 
 ZEN Value in Dollars: $$valueUsd
