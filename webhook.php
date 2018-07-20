@@ -111,7 +111,7 @@ More info can be found here: https://zencash.com/supernodes
   case '/supernodesreward':
     sendMessage($chatId, getCurrentSuperReward() . '
 
-Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates. It also does not check if the amount of supernodes fulfill the 96% uptime.
 You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
 ', '', $messageIdToReplyTo);
     break;
