@@ -63,10 +63,11 @@ switch ($command) {
     if ($chatType === 'private') {
       sendMessage($chatId, 'Hello!
     
-I\'m the ZenCash Help Bot. I can provide quick information about topics when I see a command that I know.
+I\'m the ZEN Bot. I can provide quick information about topics when I see a command that I know.
 To get a list of all commands I know, simply send /zencommands to me.
+You can also use me to tip, or thank people. For more info about that send /tipbot or /thanks
 
-I am also open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
+I am open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
 
 If you would like to donate, this is my ZenCash address: zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw');
     }
