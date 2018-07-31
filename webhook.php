@@ -55,7 +55,7 @@ else {
   die();
 }
 
-$nodeText = 'We have <a href="https://zencash.com/securenodes">secure nodes</a> and will hopefully deploy the <b>super nodes</b> in July.
+$nodeText = 'We have <a href="https://zencash.com/securenodes">secure nodes</a> and also <a href="https://zencash.com/supernodes">super nodes</a>.
 A <i>secure</i> node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
 
 switch ($command) {
@@ -216,7 +216,7 @@ If you would rather use a web wallet, a paper wallet or want to find out more ab
   case '/freezen':
     sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, <a href="http://getzen.cash">getzen.cash</a>. 
 
-You will have to register and can only receive free ZEN every 20 hours.', '', $messageIdToReplyTo);
+You will have to register and can only receive free ZEN every 24 hours.', '', $messageIdToReplyTo);
     break;
   case '/helpdesk':
   case '/zensupport':
@@ -280,7 +280,7 @@ Your current address is ' . $address;
 ' . $infos['groups']);
     break;
   case '/51':
-    sendMessage($chatId, 'ZenCash suffered a 51% attack on June 2nd. This will soon be not possible anymore. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/', '', $messageIdToReplyTo);
+    sendMessage($chatId, 'ZenCash was hit by a double spend attack on June 2nd where criminals stole 23k ZEN from an exchange. A fix against double spend attacks is already in development. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/ and https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
     break;
   case '/community':
     break;
