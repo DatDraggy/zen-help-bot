@@ -69,7 +69,7 @@ You can also use me to tip, or thank people. For more info about that send /tipb
 
 I am open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
 
-If you would like to donate, this is my ZenCash address: zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw');
+If you would like to buy DatDraggy a beer or two, this is his donation address: zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw');
     }
     break;
 
