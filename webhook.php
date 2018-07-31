@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/funcs.php");
 require_once(__DIR__ . "/config.php");
 require_once(__DIR__ . "/infos.php");
-//test
+
 $response = file_get_contents('php://input');
 $data = json_decode($response, true);
 $dump = print_r($data, true);
@@ -296,11 +296,6 @@ Your current address is ' . $address;
    * TIPPING BOT
   */
   case '/mybalance':
-    /*
-     * SELECT address FROM users WHERE userId =
-     * execute zen-cli, get balance addr
-     * sendMessage
-     */
     if ($chatType === 'private') {
       $balance = number_format(getBalance($senderUserId), 8);
       if ($balance === FALSE) {
@@ -327,7 +322,6 @@ Usage: <code>/tip</code> <b>amount</b>
       if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $config['botId']) {
         $tip = $messageArr[1];
         if (isset($repliedToMessageId)) {
-          //If is int
           if (is_numeric($tip) && $tip > 0) {
             // /tip 0.1
             if ($tip <= 1) {
