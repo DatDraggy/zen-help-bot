@@ -1,14 +1,13 @@
-[@ZenCashHelp_bot](https://t.me/ZenCashHelp_Bot) (Backup in case of rebranding [@ZenHelp_bot](https://t.me/ZenHelp_Bot) )
+[@ZenHelp_bot](https://t.me/ZenHelp_Bot)
 
 ### ToDo List
-- [ ] Clean up database queries (Ideas pls)
+- [ ] Clean up 
 - [ ] How to mine
-- [X] zengroups Languages
 - [ ] /community: Discord twitter etc
-- [ ] Improve /tip for better tipping (Main problem: unable to tip while balance being confirmed)
 
 ## Usage
 All commands associated with making a transaction will have a 0.0001 network fee. Keep that in mind when tipping or withdrawing.
+
 #### Tipping
 This bot enables users to send tips to users they find helpful.
 
