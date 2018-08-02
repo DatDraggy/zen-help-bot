@@ -18,6 +18,7 @@ if ($chatType !== 'private') {
 else {
   $messageIdToReplyTo = '';
 }
+$ownId = explode(':', $config['token'])[0];
 $senderUserId = $data['message']['from']['id'];
 $senderName = $data['message']['from']['first_name'];
 if (isset($replyToMessage['from']['last_name'])) {
@@ -230,7 +231,7 @@ Their thank-score will increase which will hopefully encourage in more people he
     }
     else {
       if (isset($repliedToMessageId)) {
-        if ($senderUserId !== $repliedToUserId && $repliedToUserId !== 555449685) {
+        if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $ownId) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
           sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
           zlog('/thanks', 'Added thanks to user ' . anonUserId($repliedToUserId));
