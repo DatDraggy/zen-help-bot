@@ -77,11 +77,11 @@ If you would like to buy @DatDraggy a beer or two, this is his donation address:
   case '/zenprice':
     sendMessage($chatId, getCurrentPrice() . '
 
-<code>Source: Bittrex, Coinmarketcap</code>', '', $messageIdToReplyTo);
+<code>Source: Bittrex, Coinmarketcap</code>', $messageIdToReplyTo);
     break;
 
   case '/nodes':
-    sendMessage($chatId, $nodeText, '', $messageIdToReplyTo);
+    sendMessage($chatId, $nodeText, $messageIdToReplyTo);
     break;
 
   case '/securenode':
@@ -90,7 +90,7 @@ If you would like to buy @DatDraggy a beer or two, this is his donation address:
 For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB space, 3-4GB RAM + some swap and a domain. 
 
 More info can be found here: https://zencash.com/securenodes 
-', '', $messageIdToReplyTo);
+', $messageIdToReplyTo);
     break;
 
   case '/securenodesreward':
@@ -98,7 +98,7 @@ More info can be found here: https://zencash.com/securenodes
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
-', '', $messageIdToReplyTo);
+', $messageIdToReplyTo);
     break;
 
   case '/supernode':
@@ -107,7 +107,7 @@ You can see the current daily reward for a secure node here: https://securenodes
 For a super node, you need 500 ZEN and a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
 
 More info can be found here: https://zencash.com/supernodes 
-', '', $messageIdToReplyTo);
+', $messageIdToReplyTo);
     break;
 
   case '/supernodesreward':
@@ -115,13 +115,13 @@ More info can be found here: https://zencash.com/supernodes
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates. It also does not check if the amount of supernodes fulfill the 96% uptime.
 You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
-', '', $messageIdToReplyTo);
+', $messageIdToReplyTo);
     break;
 
   case '/masternodes':
     sendMessage($chatId, '
 We do not have masternodes. ' . $nodeText . '
-', '', $messageIdToReplyTo);
+', $messageIdToReplyTo);
     break;
 
   case '/zencommands':
@@ -185,19 +185,19 @@ How to use: /tipbot
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
 Click here to get a list of all commands:
-', json_encode($replyMarkup), $messageId);
+', $messageId, json_encode($replyMarkup));
     }
     break;
 
   case '/ping':
-    sendMessage($chatId, 'Pong.', '', $messageId);
+    sendMessage($chatId, 'Pong.', $messageId);
     break;
   case '/zenadmins':
     if ($chatType !== 'private') {
       $adminText = 'Here is a list of all admins in this group:
 
 ';
-      sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageIdToReplyTo);
+      sendMessage($chatId, $adminText . getAdmins($chatId), $messageIdToReplyTo);
     }
     else {
       sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
@@ -212,17 +212,17 @@ The light wallets on the other hand don\'t need the full blockchain and can only
 
 If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
 ';
-    sendMessage($chatId, $walletText, '', $messageIdToReplyTo);
+    sendMessage($chatId, $walletText, $messageIdToReplyTo);
     break;
   case '/freezen':
     sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, <a href="http://getzen.cash">getzen.cash</a>. 
 
-You will have to register and can only receive free ZEN every 24 hours.', '', $messageIdToReplyTo);
+You will have to register and can only receive free ZEN every 24 hours.', $messageIdToReplyTo);
     break;
   case '/helpdesk':
   case '/zensupport':
     sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
-https://support.zencash.com', '', $messageIdToReplyTo);
+https://support.zencash.com', $messageIdToReplyTo);
     break;
   case '/thanks':
     if ($chatType === 'private') {
@@ -233,7 +233,7 @@ Their thank-score will increase which will hopefully encourage in more people he
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $ownId) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
-          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.');
+          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.', $messageIdToReplyTo);
           zlog('/thanks', 'Added thanks to user ' . anonUserId($repliedToUserId));
         }
       }
@@ -278,20 +278,20 @@ Your current address is ' . $address;
   case '/zengroups':
     sendMessage($chatId, 'Here is a list of all official chats: 
 
-' . $infos['groups']);
+' . $infos['groups'], $messageIdToReplyTo);
     break;
   case '/51':
-    sendMessage($chatId, 'ZenCash was hit by a double spend attack on June 2nd where criminals stole 23k ZEN from an exchange. A fix against double spend attacks is already in development. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/ and https://blog.zencash.com/zencash-statement-on-double-spend-attack/', '', $messageIdToReplyTo);
+    sendMessage($chatId, 'ZenCash was hit by a double spend attack on June 2nd where criminals stole 23k ZEN from an exchange. A fix against double spend attacks is already in development. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/ and https://blog.zencash.com/zencash-statement-on-double-spend-attack/', $messageIdToReplyTo);
     break;
   case '/community':
     break;
   case '/securenoderoi':
     $roiMessage = calculateSecureRoi();
-    sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
+    sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
   case '/supernoderoi':
     $roiMessage = calculateSuperRoi();
-    sendMessage($chatId, $roiMessage, '', $messageIdToReplyTo);
+    sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
   /*
    * TIPPING BOT
@@ -331,17 +331,17 @@ Usage: <code>/tip</code> <b>amount</b>
               if ($tipResult === FALSE) {
               }
               else if ($tipResult === 'no_balance') {
-                //sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", '', $messageId);
+                //sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.", $messageId);
               }
               else if ($tipResult === TRUE) {
                 if($senderUsername === NULL){
                   $senderUsername = $senderName;
                 }
-                sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", '', $messageIdToReplyTo);
+                sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", $messageIdToReplyTo);
               }
             }
             else {
-              sendMessage($chatId, "For security reasons you can't tip more than 1 ZEN.", '', $messageId);
+              sendMessage($chatId, "For security reasons you can't tip more than 1 ZEN.", $messageId);
             }
           }
         }
