@@ -58,6 +58,8 @@ else {
 
 $nodeText = 'We have <a href="https://zencash.com/securenodes">secure nodes</a> and also <a href="https://zencash.com/supernodes">super nodes</a>.
 A <i>secure</i> node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
+$nodeText = 'ZEN has <a href="https://zencash.com/securenodes">secure nodes</a> and <a href="https://zencash.com/supernodes">super nodes</a>.
+A secure node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
 
 switch ($command) {
   case '/start':
@@ -65,10 +67,10 @@ switch ($command) {
       sendMessage($chatId, 'Hello!
     
 I\'m the ZEN Bot. I can provide quick information about topics when I see a command that I know.
-To get a list of all commands I know, simply send /zencommands to me.
-You can also use me to tip, or thank people. For more info about that send /tipbot or /thanks
+To get a list of all of the commands I know, simply send “/zencommands” to me.
+You can also use me to tip or thank people. For more info about that send “/tipbot” or “/thanks”
 
-I am open source, so if you like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
+I am open source, so if you’d like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
 
 If you would like to buy @DatDraggy a beer or two, this is his donation address: zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw');
     }
@@ -96,24 +98,26 @@ More info can be found here: https://zencash.com/securenodes
   case '/securenodesreward':
     sendMessage($chatId, getCurrentSecureReward() . '
 
-Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates.
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefore changing the estimates.
 You can see the current daily reward for a secure node here: https://securenodes.zensystem.io
+
 ', $messageIdToReplyTo);
     break;
 
   case '/supernode':
   case '/supernodes':
     sendMessage($chatId, '
-For a super node, you need 500 ZEN and a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
+A super node requires  500 ZEN, a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
 
-More info can be found here: https://zencash.com/supernodes 
+More info can be found here: https://zencash.com/supernodes
 ', $messageIdToReplyTo);
     break;
 
   case '/supernodesreward':
     sendMessage($chatId, getCurrentSuperReward() . '
 
-Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefor chaning the estimates. It also does not check if the amount of supernodes fulfill the 96% uptime.
+Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefore changing the estimates. 
+
 You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
 ', $messageIdToReplyTo);
     break;
@@ -204,30 +208,32 @@ Click here to get a list of all commands:
     }
     break;
   case '/wallets':
-    $walletText = 'We currently have two types of wallet clients. There\'s the full wallet, called <a href="https://github.com/ZencashOfficial/zencash-swing-wallet-ui/releases">Swing</a>, and then there is also the light wallets, called <a href="https://github.com/ZencashOfficial/arizen/releases">Arizen</a> and <a href="https://play.google.com/store/apps/details?id=io.zensystem.zencashwallet">ZenCash Mobile</a>.
+    $walletText = '
+ZEN has two types of wallets: full and light. The Swing wallet is a full wallet, while our Arizen and ZenCash mobile wallets are light wallets.
 
-The full wallet is capable of using z-addresses, which are also known as private addresses. Swing needs to download the entire blockchain, but that will take a while and is going to use some space on your harddrive. It\'t availalbe for macOS, Windows 7+ 64bit and Linux.
+The full wallet is capable of using z-addresses, which are also known as private addresses. The Swing Wallet needs to download the entire blockchain, but that will take a while and is going to use some space on your hard drive. It\'s available for macOS, Windows 7+ 64bit, and Linux.
 
-The light wallets on the other hand don\'t need the full blockchain and can only <i>send</i> to z-addrs, but can send and receive on t-addresses. Arizen is available on macOS, Windows and Linux. The mobile wallet only on Android, but you can use Coinomi on iOS.
+The light wallets, on the other hand, don’t need the full blockchain but can only use and send to t-addresses. They can receive from z-addresses and t-addresses. Arizen is available on macOS, Windows, and Linux. The mobile wallet is only available on Android, but you can use Coinomi on iOS.
+It’s also possible to connect Arizen with a machine running zend (Swing without GUI) to use z-addresses in Arizen.
 
 If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
 ';
     sendMessage($chatId, $walletText, $messageIdToReplyTo);
     break;
   case '/freezen':
-    sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, <a href="http://getzen.cash">getzen.cash</a>. 
+    sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, https://getzen.cash . 
 
-You will have to register and can only receive free ZEN every 24 hours.', $messageIdToReplyTo);
+Registration is required. Once registered, you will be able to receive free ZEN every 24 hours.', $messageIdToReplyTo);
     break;
   case '/helpdesk':
   case '/zensupport':
-    sendMessage($chatId, 'Our <a href="https://blog.zencash.com/zenhelp-first-cryptocurrency-help-desk/">ZenHelp</a> #helpdesk is available around the clock. If you need help with something, try asking there. 
-https://support.zencash.com', $messageIdToReplyTo);
+    sendMessage($chatId,'Our <a href="https://support.zencash.com">ZenHelp</a> helpdesk is available around the clock. If you need help with something, try asking here: https://support.zencash.com
+', $messageIdToReplyTo);
     break;
   case '/thanks':
     if ($chatType === 'private') {
-      sendMessage($chatId, 'You can thank users by replying to their helping message with /thanks. 
-Their thank-score will increase which will hopefully encourage in more people helping.');
+      sendMessage($chatId, 'You can thank users by replying to their helping message with “/thanks”.
+Their thank-score will increase which will hopefully encourage more people to help.');
     }
     else {
       if (isset($repliedToMessageId)) {
@@ -250,7 +256,7 @@ Their thank-score will increase which will hopefully encourage in more people he
     if ($chatType === 'private') {
       if (empty($messageArr[1])) {
         $address = getUserAddress($senderUserId);
-        $messageToSend = 'No Address supplied. Use <code>/myaddress t_addr</code> to set your address. It will be used for the monthly giveaway for the top 3 helpers and withdrawing your tips.';
+        $messageToSend = 'No Address supplied. Use “/myaddress t_addr” to set up your address. It will be used for the monthly giveaway for the top 3 helpers and withdrawing your tips.';
         if (!empty($address)) {
           $messageToSend .= '
           
@@ -303,16 +309,15 @@ Your current address is ' . $address;
       }
       else {
         sendMessage($chatId, "Your current balance is: $balance
-(If your address sent or received ZEN a short time ago this will show as 0.00000000 until it's confirmed)");
+(If your address sent or received ZEN a short time ago this will show as 0.00000000)");
       }
     }
     break;
 
   case '/tip':
     if ($chatType === 'private') {
-      sendMessage($chatId, "
-Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
-After tipping someone you have to wait for the transaction to be confirmed.
+      sendMessage($chatId, "Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
+After tipping someone, you will have to wait for the transaction to be confirmed.
 
 Usage: <code>/tip</code> <b>amount</b>
 
@@ -360,10 +365,10 @@ Usage: <code>/tip</code> <b>amount</b>
       zlog('/deposit', 'Requested depo addr for ' . anonUserId($senderUserId));
       sendMessage($chatId, "
 This is your deposit address:
-<b>$address</b>
+$address
 
-Send any amount of ZEN to it. You'll be able to widthdraw it at any time by using /withdraw.
-When sending tips, a fee of $fee will be substracted from your balance.");
+Send any amount of ZEN to it. You'll be able to withdraw it at any time by using /withdraw.
+When sending tips, a fee of $fee will be subtracted from your balance.");
     }
     break;
 
@@ -379,8 +384,8 @@ When sending tips, a fee of $fee will be substracted from your balance.");
           sendMessage($chatId, "You either haven't created a deposit address yet, or your tipping address doesn't contain enough ZEN. Keep in mind that there is a <b>$fee</b> fee.");
         }
         else if ($result === 'no_withdraw') {
-          sendMessage($chatId, "There is no withdrawal address asociated with your account. 
-You can add one with /myaddress.");
+          sendMessage($chatId, "There is no withdrawal address associated with your account. 
+You can add one with “/myaddress”.");
         }
         else if ($result === TRUE) {
           sendMessage($chatId, "Success. Your $amount ZEN are now on their way to your /myaddress address.");
@@ -402,15 +407,14 @@ Usage: <code>/withdraw</code> <b>amount</b>
   case '/tipbot':
     if ($chatType === 'private') {
       sendMessage($chatId, '
-To use the tipping bot you have to get your deposit address by using /deposit. 
+To use the tipping bot you have to get your deposit address by using “/deposit”. 
 
-Send some ZEN to this address and wait for the transaction to confirm. Do /mybalance to see if your ZEN arrived.
+Send some ZEN to this address and wait for the transaction to confirm. Use the  “/mybalance” command to see if your ZEN arrived.
 
-Once you have a balance, simply reply to a users message in a group chat with /tip as seen on the screenshot <a href="https://puu.sh/ATVvn/d765ac3c3d.png">here</a>.
+Once you have a balance, simply reply to a users message in a group chat with “/tip” as seen on the screenshot <a href="https://puu.sh/ATVvn/d765ac3c3d.png">here</a>.
 
 To withdraw your tips or balance you\'ll firstly have to use /myaddress to set a withdrawal address.
-Then, simply use /withdraw with the amount behind. `/withdraw 0.1` would withdraw 0.0999 from your tipping address and send it to the address you set with /myaddress
-');
+Then, simply use “/withdraw” with the amount behind. `/withdraw 0.1` would withdraw 0.0999 from your tipping address and send it to the address you set with “/myaddress”.');
     }
     break;
 
