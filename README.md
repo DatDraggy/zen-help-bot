@@ -37,7 +37,7 @@ The top 3 users with the most thanks qualify for a __special reward__ before the
 That reward is sent to their `/deposit`-address and can be withdrawn like a tip would (`/withdraw`).
 
 #### Donations
-ZenCash zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw
+ZEN zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw
 
 BTC 122WSgrn2YVG6KQSKB53jfCaZYi3xMi6nb
 

@@ -152,7 +152,6 @@ Knowledge Commands (click to get info):
 /wallets
 /freezen
 /helpdesk
-/51
 /securenoderoi
 /supernoderoi
 /deposit
@@ -209,19 +208,19 @@ Click here to get a list of all commands:
     break;
   case '/wallets':
     $walletText = '
-ZEN has two types of wallets: full and light. The Swing wallet is a full wallet, while our Arizen and ZenCash mobile wallets are light wallets.
+ZEN has two types of wallets: full and light. The Swing wallet is a full wallet, while our Arizen and Horizen mobile wallets are light wallets.
 
 The full wallet is capable of using z-addresses, which are also known as private addresses. The Swing Wallet needs to download the entire blockchain, but that will take a while and is going to use some space on your hard drive. It\'s available for macOS, Windows 7+ 64bit, and Linux.
 
 The light wallets, on the other hand, don’t need the full blockchain but can only use and send to t-addresses. They can receive from z-addresses and t-addresses. Arizen is available on macOS, Windows, and Linux. The mobile wallet is only available on Android, but you can use Coinomi on iOS.
-It’s also possible to connect Arizen with a machine running zend (Swing without GUI) to use z-addresses in Arizen.
+It\'s also possible to connect Arizen with a machine running zend (Swing without GUI) to use z-addresses in Arizen.
 
 If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
 ';
     sendMessage($chatId, $walletText, $messageIdToReplyTo);
     break;
   case '/freezen':
-    sendMessage($chatId, 'You can get small amounts of ZenCash from our free faucet, https://getzen.cash . 
+    sendMessage($chatId, 'You can get small amounts of ZEN from our free faucet, https://getzen.cash . 
 
 Registration is required. Once registered, you will be able to receive free ZEN every 24 hours.', $messageIdToReplyTo);
     break;
@@ -285,9 +284,6 @@ Your current address is ' . $address;
     sendMessage($chatId, 'Here is a list of all official chats: 
 
 ' . $infos['groups'], $messageIdToReplyTo);
-    break;
-  case '/51':
-    sendMessage($chatId, 'ZenCash was hit by a double spend attack on June 2nd where criminals stole 23k ZEN from an exchange. A fix against double spend attacks is already in development. More info: https://blog.zencash.com/zen-is-antifragile-beyond-a-51-attack/ and https://blog.zencash.com/zencash-statement-on-double-spend-attack/', $messageIdToReplyTo);
     break;
   case '/community':
     break;
