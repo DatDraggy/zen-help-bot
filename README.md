@@ -4,6 +4,7 @@
 - [ ] Clean up 
 - [ ] How to mine
 - [ ] /community: Discord twitter etc
+- [ ] Add sendChatAction for longer operations
 
 ## Usage
 All commands associated with making a transaction will have a 0.0001 network fee. Keep that in mind when tipping or withdrawing.
