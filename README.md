@@ -1,6 +1,7 @@
 [@ZenHelp_bot](https://t.me/ZenHelp_Bot)
 
 ### ToDo List
+- [ ] Waiting to add to group
 - [ ] Clean up 
 - [ ] How to mine
 - [ ] /community: Discord twitter etc
