@@ -1,6 +1,6 @@
 <?php
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
-function sendMessage($chatId, $text, $replyMarkup = '', $replyTo = '') {
+function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   global $config;
   $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
@@ -41,7 +41,7 @@ function getCurrentPrice() {
   $bittrexJson = file_get_contents('https://bittrex.com/Api/v2.0/pub/market/GetMarketSummary?marketName=BTC-ZEN');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $pricesBittrex = json_decode($bittrexJson, true);
-  return 'Last ZenCash price: ' . number_format($pricesBittrex['result']['Last'], 8) . '
+  return 'Last ZEN price: ' . number_format($pricesBittrex['result']['Last'], 8) . '
 24h High: ' . number_format($pricesBittrex['result']['High'], 8) . '
 24h Low: ' . number_format($pricesBittrex['result']['Low'], 8) . '
 Price in Dollars: $' . number_format($pricesCoinmarket['price_usd'], 2);
@@ -556,13 +556,6 @@ function doRpcCall($config, $json){
     return FALSE;
   }
   else {
-    /*curl_close ($ch);
-    mail($config['mail'], 'Test', print_r($result, true));
-    ob_start();
-    var_dump($result);
-    $result = ob_get_clean();
-    mail($config['mail'], 'Test', $result);
-    die();*/
     curl_close ($ch);
     return $result;
   }
