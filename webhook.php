@@ -195,7 +195,8 @@ Click here to get a list of all commands:
       $adminText = 'Here is a list of all admins in this group:
 
 ';
-      sendMessage($chatId, $adminText . getAdmins($chatId), '', $messageIdToReplyTo);
+      //We don't want no notification on command
+      sendMessage($chatId, $adminText . str_replace('@', '', getAdmins($chatId)), '', $messageIdToReplyTo);
     }
     else {
       sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');
