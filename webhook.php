@@ -1,4 +1,6 @@
 <?php
+//So that PHPStorm finally shuts up about it not existing...
+$config = array();
 require_once(__DIR__ . "/funcs.php");
 require_once(__DIR__ . "/config.php");
 require_once(__DIR__ . "/infos.php");
@@ -6,6 +8,12 @@ require_once(__DIR__ . "/infos.php");
 $response = file_get_contents('php://input');
 $data = json_decode($response, true);
 $dump = print_r($data, true);
+if(file_exists($config['timeoutsave'])){
+  $timeouts = json_decode(file_get_contents($config['timeoutsave']),true);
+}
+else{
+  file_put_contents($config['timeoutsave'], '{}');
+}
 
 $chatId = $data['message']['chat']['id'];
 $chatType = $data['message']['chat']['type'];
@@ -77,17 +85,20 @@ If you would like to buy @DatDraggy a beer or two, this is his donation address:
     break;
 
   case '/zenprice':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, getCurrentPrice() . '
 
 <code>Source: Bittrex, Coinmarketcap</code>', $messageIdToReplyTo);
     break;
 
   case '/nodes':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, $nodeText, $messageIdToReplyTo);
     break;
 
   case '/securenode':
   case '/securenodes':
+  $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, '
 For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB space, 3-4GB RAM + some swap and a domain. 
 
@@ -96,6 +107,7 @@ More info can be found here: https://zencash.com/securenodes
     break;
 
   case '/securenodesreward':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, getCurrentSecureReward() . '
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefore changing the estimates.
@@ -106,6 +118,7 @@ You can see the current daily reward for a secure node here: https://securenodes
 
   case '/supernode':
   case '/supernodes':
+  $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, '
 A super node requires  500 ZEN, a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
 
@@ -114,6 +127,7 @@ More info can be found here: https://zencash.com/supernodes
     break;
 
   case '/supernodesreward':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, getCurrentSuperReward() . '
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefore changing the estimates. 
@@ -123,6 +137,7 @@ You can see the current daily reward for a secure node here: https://supernodes.
     break;
 
   case '/masternodes':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, '
 We do not have masternodes. ' . $nodeText . '
 ', $messageIdToReplyTo);
@@ -175,6 +190,7 @@ How to use: /tipbot
 ');
     }
     else {
+      $timeouts = checkLastExecute($timeouts, $command, $chatType);
       $replyMarkup = array(
         'inline_keyboard' => array(
           array(
@@ -196,6 +212,7 @@ Click here to get a list of all commands:
     sendMessage($chatId, 'Pong.', $messageId);
     break;
   case '/zenadmins':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     if ($chatType !== 'private') {
       $adminText = 'Here is a list of all admins in this group:
 
@@ -208,6 +225,7 @@ Click here to get a list of all commands:
     }
     break;
   case '/wallets':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     $walletText = '
 ZEN has two types of wallets: full and light. The Swing wallet is a full wallet, while our Arizen and Horizen mobile wallets are light wallets.
 
@@ -221,12 +239,14 @@ If you would rather use a web wallet, a paper wallet or want to find out more ab
     sendMessage($chatId, $walletText, $messageIdToReplyTo);
     break;
   case '/freezen':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, 'You can get small amounts of ZEN from our free faucet, https://getzen.cash . 
 
 Registration is required. Once registered, you will be able to receive free ZEN every 24 hours.', $messageIdToReplyTo);
     break;
   case '/helpdesk':
   case '/zensupport':
+  $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId,'Our <a href="https://support.zencash.com">ZenHelp</a> helpdesk is available around the clock. If you need help with something, try asking here: https://support.zencash.com
 ', $messageIdToReplyTo);
     break;
@@ -282,6 +302,7 @@ Your current address is ' . $address;
     }
     break;
   case '/zengroups':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, 'Here is a list of all official chats: 
 
 ' . $infos['groups'], $messageIdToReplyTo);
@@ -289,10 +310,12 @@ Your current address is ' . $address;
   case '/community':
     break;
   case '/securenoderoi':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     $roiMessage = calculateSecureRoi();
     sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
   case '/supernoderoi':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     $roiMessage = calculateSuperRoi();
     sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
@@ -420,6 +443,7 @@ Then, simply use “/withdraw” with the amount behind. `/withdraw 0.1` would w
    */
 
   case '/id':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType);
     sendMessage($chatId, $chatId . ' ' . $senderUserId);
     break;
   case '/testdev':
@@ -430,3 +454,5 @@ Then, simply use “/withdraw” with the amount behind. `/withdraw 0.1` would w
       sendMessage($chatId, 'Unknown command! Use /zencommands if you need assistance or contact @DatDraggy.');
     }
 }
+
+file_put_contents($config['timeoutsave'], json_encode($timeouts));
