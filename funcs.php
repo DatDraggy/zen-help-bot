@@ -156,6 +156,21 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
   return $score;
 }
 
+function checkLastExecute($timeouts, $command, $type) {
+  if ($type === 'private') {
+    return $timeouts;
+  }
+  global $config;
+  $now = time();
+  $lastExecute = $timeouts[$command];
+
+  if ($now < $lastExecute + $config['commandInterval']) {
+    die();
+  }
+
+  $timeouts[$command] = $now;
+  return $timeouts;
+}
 
 function getOwnThankScore($senderUserId) {
   global $config;
