@@ -15,3 +15,5 @@ $config['rpcport'] = 18231;
 $config['fee'] = 0.0001;
 $config['botId'] = 123456789;
 $config['botName'] = 'SomeThing_bot';
+$config['timeoutsave'] = 'lastExecutes.json';
+$config['commandInterval'] = 600;
