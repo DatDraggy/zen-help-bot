@@ -158,19 +158,19 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
   return $score;
 }
 
-function checkLastExecute($timeouts, $command, $type) {
+function checkLastExecute($timeouts, $command, $type, $id) {
   if ($type === 'private') {
     return $timeouts;
   }
   global $config;
   $now = time();
-  $lastExecute = $timeouts[$command];
+  $lastExecute = $timeouts[$id][$command];
 
   if ($now < $lastExecute + $config['commandInterval']) {
     die();
   }
 
-  $timeouts[$command] = $now;
+  $timeouts[$id][$command] = $now;
   return $timeouts;
 }
 
