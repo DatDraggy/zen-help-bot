@@ -367,7 +367,7 @@ function getDepositAddress($userId) {
   return $tippingAddress;
 }
 
-function getBalance($userId) {
+function getBalance($userId, $confirmations = 1) {
   global $config;
   $dbConnection = buildDatabaseConnection($config);
   try {
@@ -386,7 +386,7 @@ function getBalance($userId) {
     return '0';
   }
   //Use insight api maybe?
-  return z_getBalance($config, $tippingAddress);
+  return z_getBalance($config, $tippingAddress, $confirmations);
 }
 
 function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
@@ -624,13 +624,14 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
   }
 }
 
-function z_getBalance($config, $tipping) {
+function z_getBalance($config, $tipping, $confirmations = 1) {
   $command = 'z_getbalance';
 
-  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$tipping'] }";
-  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$tipping"] }';
+  $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$tipping', $confirmations] }";
+  $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$tipping", $confirmations] }';
   $json = str_replace('$command', $command, $json);
   $json = str_replace('$tipping', $tipping, $json);
+  $json = str_replace('$confirmations', $confirmations, $json);
 
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {

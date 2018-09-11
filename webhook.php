@@ -325,10 +325,12 @@ Your current address is ' . $address;
   case '/mybalance':
     if ($chatType === 'private') {
       $balance = number_format(getBalance($senderUserId), 8);
+      $balanceUnconf = number_format(getBalance($senderUserId, 0), 8);
       if ($balance === FALSE) {
       }
       else {
         sendMessage($chatId, "Your current balance is: $balance
+(Unconfirmed: $balanceUnconf)
 (If your address sent or received ZEN a short time ago this will show as 0.00000000)");
       }
     }
