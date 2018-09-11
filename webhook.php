@@ -364,7 +364,8 @@ Usage: <code>/tip</code> <b>amount</b>
                 if($senderUsername === NULL){
                   $senderUsername = $senderName;
                 }
-                sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!", $messageIdToReplyTo);
+                sendMessage($chatId, "$senderUsername just sent you <b>$tip</b> ZEN as a tip!
+See your balance by sending me a private message.", $messageIdToReplyTo);
               }
             }
             else {
