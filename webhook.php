@@ -203,7 +203,7 @@ How to use: /tipbot
       );
       //ToDo: Check last use of command/create a timeout
       sendMessage($chatId, '
-Click here to get a list of all commands:
+Click the button to get a list of all commands:
 ', $messageId, json_encode($replyMarkup));
     }
     break;
@@ -437,7 +437,7 @@ Send some ZEN to this address and wait for the transaction to confirm. Use the  
 Once you have a balance, simply reply to a users message in a group chat with “/tip” as seen on the screenshot <a href="https://puu.sh/ATVvn/d765ac3c3d.png">here</a>.
 
 To withdraw your tips or balance you\'ll firstly have to use /myaddress to set a withdrawal address.
-Then, simply use “/withdraw” with the amount behind. `/withdraw 0.1` would withdraw 0.0999 from your tipping address and send it to the address you set with “/myaddress”.');
+Then, simply use “/withdraw” with the amount behind. `/withdraw 0.1` would withdraw ' . 0.1 - $config['fee'] . ' from your tipping address and send it to the address you set with “/myaddress”.');
     }
     break;
 
