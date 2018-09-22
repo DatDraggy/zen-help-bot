@@ -55,7 +55,7 @@ if (isset($data['message']['reply_to_message'])) {
 
 if (substr($message, '0', '1') == '/') {
   $messageArr = explode(' ', $message);
-  $command = $messageArr[0];
+  $command = explode('@', $messageArr[0])[0];
   if (isset($messageArr[1]) && $messageArr[1] == 'zencommands') {
     $command = '/zencommands';
   }
