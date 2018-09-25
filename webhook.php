@@ -64,9 +64,9 @@ else {
   die();
 }
 
-$nodeText = 'We have <a href="https://zencash.com/securenodes">secure nodes</a> and also <a href="https://zencash.com/supernodes">super nodes</a>.
+$nodeText = 'We have <a href="https://horizen.global/securenodes">secure nodes</a> and also <a href="https://horizen.global/supernodes">super nodes</a>.
 A <i>secure</i> node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
-$nodeText = 'ZEN has <a href="https://zencash.com/securenodes">secure nodes</a> and <a href="https://zencash.com/supernodes">super nodes</a>.
+$nodeText = 'ZEN has <a href="https://horizen.global/securenodes">secure nodes</a> and <a href="https://horizen.global/supernodes">super nodes</a>.
 A secure node needs 42 ZEN in a transparent address, whereas the <i>super</i> node requires 500 ZEN.';
 
 switch ($command) {
@@ -78,7 +78,7 @@ I\'m the ZEN Bot. I can provide quick information about topics when I see a comm
 To get a list of all of the commands I know, simply send “/zencommands” to me.
 You can also use me to tip or thank people. For more info about that send “/tipbot” or “/thanks”
 
-I am open source, so if you’d like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zencash-help-bot
+I am open source, so if you’d like you can add your own commands by creating a pull request here: https://github.com/DatDraggy/zen-help-bot
 
 If you would like to buy @DatDraggy a beer or two, this is his donation address: zni7tRLevBnJxWMzkUoMVze1e6RCSPDdbfw');
     }
@@ -102,7 +102,7 @@ If you would like to buy @DatDraggy a beer or two, this is his donation address:
     sendMessage($chatId, '
 For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB space, 3-4GB RAM + some swap and a domain. 
 
-More info can be found here: https://zencash.com/securenodes 
+More info can be found here: https://horizen.global/securenodes 
 ', $messageIdToReplyTo);
     break;
 
@@ -122,7 +122,7 @@ You can see the current daily reward for a secure node here: https://securenodes
     sendMessage($chatId, '
 A super node requires  500 ZEN, a bigger VPS with a quad core cpu, +100GB space, ~8GB RAM and a domain. 
 
-More info can be found here: https://zencash.com/supernodes
+More info can be found here: https://horizen.global/supernodes
 ', $messageIdToReplyTo);
     break;
 
@@ -234,7 +234,7 @@ The full wallet is capable of using z-addresses, which are also known as private
 The light wallets, on the other hand, don’t need the full blockchain but can only use and send to t-addresses. They can receive from z-addresses and t-addresses. Arizen is available on macOS, Windows, and Linux. The mobile wallet is only available on Android, but you can use Coinomi on iOS.
 It\'s also possible to connect Arizen with a machine running zend (Swing without GUI) to use z-addresses in Arizen.
 
-If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://zencash.com/wallets/
+If you would rather use a web wallet, a paper wallet or want to find out more about the wallets, take a look here: https://horizen.global/wallets/
 ';
     sendMessage($chatId, $walletText, $messageIdToReplyTo);
     break;
@@ -247,7 +247,7 @@ Registration is required. Once registered, you will be able to receive free ZEN 
   case '/helpdesk':
   case '/zensupport':
   $timeouts = checkLastExecute($timeouts, $command, $chatType, $chatId);
-    sendMessage($chatId,'Our <a href="https://support.zencash.com">ZenHelp</a> helpdesk is available around the clock. If you need help with something, try asking here: https://support.zencash.com
+    sendMessage($chatId,'Our <a href="https://support.horizen.global">ZenHelp</a> helpdesk is available around the clock. If you need help with something, try asking here: https://support.horizen.global
 ', $messageIdToReplyTo);
     break;
   case '/thanks':
