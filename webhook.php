@@ -105,7 +105,7 @@ For a secure node, you need 42 ZEN and a small VPS with a single core cpu, ~20GB
 More info can be found here: https://horizen.global/securenodes 
 ', $messageIdToReplyTo);
     break;
-
+  case '/securenoderewards':
   case '/securenodesreward':
     $timeouts = checkLastExecute($timeouts, $command, $chatType, $chatId);
     sendMessage($chatId, getCurrentSecureReward() . '
