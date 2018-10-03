@@ -2,7 +2,7 @@
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   global $config;
-  $url = $config['url'] . "sendMessage";
+/*  $url = $config['url'] . "sendMessage";
   $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => $text, 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
 
 // use key 'http' even if you send the request to https://...
@@ -15,9 +15,9 @@ function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   );
   $context  = stream_context_create($options);
   $result = file_get_contents($url, false, $context);
-  if ($result === FALSE) { sendMessage(175933892, $result); }
+  if ($result === FALSE) { sendMessage(175933892, $result); }*/
 
-  //$response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
+  $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
 }
 
