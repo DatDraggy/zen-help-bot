@@ -73,6 +73,10 @@ function getAdmins($chatId) {
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
+    $name = $admin['user']['first_name'];
+    if (isset($admin['user']['last_name'])) {
+      $name .= ' ' . $admin['user']['last_name'];
+    }
     $username = '';
     if (isset($admin['user']['username'])) {
       //Is there seriously nothing more elegant than this?
@@ -80,7 +84,7 @@ function getAdmins($chatId) {
     }
     if (!empty($username) && empty($is_bot)) {
       //Replace username with first & last in future version?
-      $result = $result . '<a href="https://t.me/' . $username . '">' . $username . '</a>' . '
+      $result = $result . '<a href="https://t.me/' . $username . '">' . $name . '</a>' . '
 ';
       $adminKey = array_search($admin, $admins, true);
       unset($admins[$adminKey]);
