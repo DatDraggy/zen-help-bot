@@ -3,7 +3,7 @@
 function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   global $config;
   $url = $config['url'] . "sendMessage";
-  $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => urlencode($text), 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
+  $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => $text, 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
 
 // use key 'http' even if you send the request to https://...
   $options = array(
