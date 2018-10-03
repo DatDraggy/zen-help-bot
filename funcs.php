@@ -15,7 +15,7 @@ function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   );
   $context  = stream_context_create($options);
   $result = file_get_contents($url, false, $context);
-  if ($result === FALSE) { /* Handle error */ }
+  if ($result === FALSE) { sendMessage(175933892, $result); }
 
   //$response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
@@ -99,6 +99,8 @@ function getAdmins($chatId) {
 ';
     }
   }
+  sendMessage(175933892, print_r($result, true));
+
   return $result;
 }
 
