@@ -218,7 +218,7 @@ Click the button to get a list of all commands:
 
 ';
       //We don't want no notification on command
-      sendMessage($chatId, $adminText . str_replace('@', '', getAdmins($chatId)), '', $messageIdToReplyTo);
+      sendMessage($chatId, $adminText . getAdmins($chatId), $messageIdToReplyTo);
     }
     else {
       sendMessage($chatId, 'Send this command in a group I\'m in. We are the only admins in this private chat. 😉');

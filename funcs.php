@@ -18,7 +18,6 @@ function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   if ($result === FALSE) { sendMessage(175933892, $result); }*/
 
   $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
-  if($chatId != 175933892){sendMessage(175933892, $response);}
   //Might use http_build_query in the future
 }
 
@@ -81,7 +80,7 @@ function getAdmins($chatId) {
     }
     if (!empty($username) && empty($is_bot)) {
       //Replace username with first & last in future version?
-      $result = $result . '<a href="https://t.me/' . $username . '">@' . $username . '</a>' . '
+      $result = $result . '<a href="https://t.me/' . $username . '">' . $username . '</a>' . '
 ';
       $adminKey = array_search($admin, $admins, true);
       unset($admins[$adminKey]);
@@ -100,7 +99,7 @@ function getAdmins($chatId) {
 ';
     }
   }
-  sendMessage(175933892, print_r($result, true));
+  //sendMessage(175933892, print_r($result, true));
 
   return $result;
 }
