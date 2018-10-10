@@ -61,7 +61,7 @@ function getCurrentPrice() {
 24h High: ' . number_format($pricesBittrex['High'], 8) . '
 24h Low: ' . number_format($pricesBittrex['Low'], 8) . '
 Price in Dollars: $' . number_format($pricesCoinmarket['price_usd'], 2) . '
-CMC Rank: ' . number_format($pricesCoinmarket['rank'], 2);
+CMC Rank: ' . number_format($pricesCoinmarket['rank'], 0);
 //return 'Price in Dollars: $'.number_format($pricesCoinmarket['price_usd'], 2);
 }
 
