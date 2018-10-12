@@ -664,3 +664,16 @@ function z_getBalance($config, $tipping, $confirmations = 1) {
     return $jsondec['result'];
   }
 }
+
+function returnResponse(){
+  ignore_user_abort(true);
+  ob_start();
+// do initial processing here
+  header('Connection: close');
+  header('Content-Length: '.ob_get_length());
+  header("Content-Encoding: none");
+  header("Status: 200");
+  ob_end_flush();
+  ob_flush();
+  flush();
+}
