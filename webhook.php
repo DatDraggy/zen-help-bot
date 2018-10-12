@@ -259,7 +259,7 @@ Their thank-score will increase which will hopefully encourage more people to he
       if (isset($repliedToMessageId)) {
         if ($senderUserId !== $repliedToUserId && $repliedToUserId !== $ownId) {
           $newScore = countThanks($repliedToUserId, $repliedToName, $repliedToUsername);
-          sendMessage($chatId, 'Awesome! <' . $repliedToName . '\'s thank-score is now ' . $newScore . '.', $messageIdToReplyTo);
+          sendMessage($chatId, 'Awesome! ' . $repliedToName . '\'s thank-score is now ' . $newScore . '.', $messageIdToReplyTo);
           zlog('/thanks', 'Added thanks to user ' . anonUserId($repliedToUserId));
         }
       }

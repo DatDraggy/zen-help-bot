@@ -73,18 +73,39 @@ function getAdmins($chatId) {
   $admins = json_decode($response, true)['result'];
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
+    $firstName = $admin['user']['first_name'];
     $name = $admin['user']['first_name'];
     if (isset($admin['user']['last_name'])) {
       $name .= ' ' . $admin['user']['last_name'];
     }
-    $id = $admin['user']['id'];
-
-    if (empty($is_bot) || $is_bot == 0) {
+    $username = '';
+    if (isset($admin['user']['username'])) {
+      //Is there seriously nothing more elegant than this?
+      $username = $admin['user']['username'];
+    }
+    if (!empty($username) && empty($is_bot)) {
       //Replace username with first & last in future version?
-      $result = $result . '<a href="tg://user?id=' . $id . '">' . $name . '</a>' . '
+      $result = $result . '<a href="https://t.me/' . $username . '">' . $name . '</a>' . '
+';
+      $adminKey = array_search($admin, $admins, true);
+      unset($admins[$adminKey]);
+    }
+  }
+
+  foreach ($admins as $admin) {
+    $is_bot = $admin['user']['is_bot'];
+    $firstName = $admin['user']['first_name'];
+    $lastName = '';
+    if (isset($admin['user']['last_name'])) {
+      $lastName = ' ' . $admin['user']['last_name'];
+    }
+    if (empty($is_bot)) {
+      $result = $result . $firstName . $lastName . '
 ';
     }
   }
+  //sendMessage(175933892, print_r($result, true));
+
   return $result;
 }
 
