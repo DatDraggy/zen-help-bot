@@ -330,8 +330,7 @@ Your current address is ' . $address;
       }
       else {
         sendMessage($chatId, "Your current balance is: $balance
-(Unconfirmed: $balanceUnconf)
-(If your address sent or received ZEN a short time ago this will show as 0.00000000)");
+(Unconfirmed: $balanceUnconf)");
       }
     }
     break;

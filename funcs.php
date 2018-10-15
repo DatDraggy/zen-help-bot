@@ -648,7 +648,6 @@ function sendMany($config, $fromAddr, $toAddr, $amount, $currentBalance) {
 
 function z_getBalance($config, $tipping, $confirmations = 1) {
   $command = 'z_getbalance';
-
   $json = "{'jsonrpc': '1.0', 'id': 'curl', 'method': '$command', 'params': ['$tipping', $confirmations] }";
   $json = '{"jsonrpc": "1.0", "id": "curl", "method": "$command", "params": ["$tipping", $confirmations] }';
   $json = str_replace('$command', $command, $json);
@@ -668,7 +667,6 @@ function z_getBalance($config, $tipping, $confirmations = 1) {
 function returnResponse(){
   ignore_user_abort(true);
   ob_start();
-// do initial processing here
   header('Connection: close');
   header('Content-Length: '.ob_get_length());
   header("Content-Encoding: none");
