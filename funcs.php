@@ -188,7 +188,7 @@ function getStakeNodeRatio() {
   $supNodesAmount = json_decode($superJson, true)['global']['up'];
   $secNodesAmount = json_decode($secureJson, true)['global']['up'];
 
-  return ((($secNodesAmount * 42) + ($supNodesAmount * 500)) / $totalSupply) * 100;
+  return number_format(((($secNodesAmount * 42) + ($supNodesAmount * 500)) / $totalSupply) * 100, 2);
 }
 
 function checkLastExecute($timeouts, $command, $type, $id) {

@@ -321,7 +321,7 @@ Your current address is ' . $address;
     break;
   case '/stakeratio':
     $ratio = getStakeNodeRatio();
-    sendMessage($chatId, $ratio);
+    sendMessage($chatId, "Current stake to supply ratio: $ratio%", $messageIdToReplyTo);
     break;
   /*
    * TIPPING BOT
