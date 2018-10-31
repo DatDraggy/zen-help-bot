@@ -319,6 +319,10 @@ Your current address is ' . $address;
     $roiMessage = calculateSuperRoi();
     sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
+  case '/stakeratio':
+    $ratio = getStakeNodeRatio();
+    sendMessage($chatId, $ratio);
+    break;
   /*
    * TIPPING BOT
   */

@@ -2,20 +2,20 @@
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
   global $config;
-/*  $url = $config['url'] . "sendMessage";
-  $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => $text, 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
+  /*  $url = $config['url'] . "sendMessage";
+    $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => $text, 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
 
-// use key 'http' even if you send the request to https://...
-  $options = array(
-      'http' => array(
-          'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-          'method'  => 'POST',
-          'content' => http_build_query($data)
-      )
-  );
-  $context  = stream_context_create($options);
-  $result = file_get_contents($url, false, $context);
-  if ($result === FALSE) { sendMessage(175933892, $result); }*/
+  // use key 'http' even if you send the request to https://...
+    $options = array(
+        'http' => array(
+            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+            'method'  => 'POST',
+            'content' => http_build_query($data)
+        )
+    );
+    $context  = stream_context_create($options);
+    $result = file_get_contents($url, false, $context);
+    if ($result === FALSE) { sendMessage(175933892, $result); }*/
 
   $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
@@ -161,8 +161,7 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
       notifyOnException('Database Update', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Updated user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
-  }
-  else {
+  } else {
     $score = 1;
     //if not exist, create entry
     try {
@@ -178,6 +177,18 @@ function countThanks($repliedToUserId, $repliedToName, $repliedToUsername) {
     zlog(__FUNCTION__, 'Inserted user ' . substr($repliedToUserId, '0', strlen($repliedToUserId) - 3));
   }
   return $score;
+}
+
+
+function getStakeNodeRatio() {
+  $superJson = file_get_contents('https://supernodes.zensystem.io/api/srvstats');
+  $coinmarketJson = file_get_contents('https://api.coinmarketcap.com/v1/ticker/zencash/');
+  $secureJson = file_get_contents('https://securenodes.zensystem.io/api/srvstats');
+  $totalSupply = json_decode($coinmarketJson, true)[0]['total_supply'];
+  $supNodesAmount = json_decode($superJson, true)['global']['up'];
+  $secNodesAmount = json_decode($secureJson, true)['global']['up'];
+
+  return ((($secNodesAmount * 42) + ($supNodesAmount * 500)) / $totalSupply) * 100;
 }
 
 function checkLastExecute($timeouts, $command, $type, $id) {
@@ -227,8 +238,7 @@ function getScoreboard() {
       if (empty($row['username'])) {
         $scoreboard .= '
 ' . $row['name'] . ': ' . $row['score'];
-      }
-      else {
+      } else {
         $scoreboard .= '
 @' . $row['username'] . ': ' . $row['score'];
       }
@@ -262,8 +272,7 @@ function addUserAddress($userId, $address, $name, $username) {
       notifyOnException('Database Update', $config, $sql, $e);
     }
     zlog(__FUNCTION__, 'Updated user ' . substr($userId, '0', strlen($userId) - 3));
-  }
-  else {
+  } else {
     try {
       $sql = "INSERT INTO users(user_id, name, username, address) VALUES ('$userId', '$name', '$username', '$address')";
       $stmt = $dbConnection->prepare("INSERT INTO users(user_id, name, username, address) VALUES (:userId, :name, :username, :address)");
@@ -361,8 +370,7 @@ function getDepositAddress($userId) {
   }
   if (!empty($row['tipping'])) {
     $tippingAddress = $row['tipping'];
-  }
-  else if (!empty($row)) {
+  } else if (!empty($row)) {
     $tippingAddress = getNewAddress($config);
     try {
       $sql = "UPDATE users SET address='$tippingAddress' WHERE user_id = '$userId'";
@@ -373,8 +381,7 @@ function getDepositAddress($userId) {
     } catch (PDOException $e) {
       notifyOnException('Database Update', $config, $sql, $e);
     }
-  }
-  else {
+  } else {
     $tippingAddress = getNewAddress($config);
     try {
       $sql = "INSERT INTO users(user_id, tipping) VALUES ('$userId', '$tippingAddress')";
@@ -403,8 +410,7 @@ function getBalance($userId, $confirmations = 1) {
   }
   if (!empty($row['tipping'])) {
     $tippingAddress = $row['tipping'];
-  }
-  else {
+  } else {
     return '0';
   }
   //Use insight api maybe?
@@ -425,8 +431,7 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   }
   if (!empty($row) && !empty($row['tipping'])) {
     $tippingFromAddress = $row['tipping'];
-  }
-  else {
+  } else {
     return 'no_balance';
   }
   try {
@@ -441,8 +446,7 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
   if (!empty($row)) {
     if (!empty($row['tipping'])) {
       $tippingToAddress = $row['tipping'];
-    }
-    else {
+    } else {
       //Generate Address and update
       $tippingToAddress = getNewAddress($config);
       if ($tippingToAddress === FALSE) {
@@ -460,8 +464,7 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
         notifyOnException('Database Update', $config, $sql, $e);
       }
     }
-  }
-  else {
+  } else {
     //Generate address and insert
     $tippingToAddress = getNewAddress($config);
     if ($tippingToAddress === FALSE) {
@@ -489,8 +492,7 @@ function sendTipToMessage($fromUserId, $toUserId, $amountToSend) {
     if (sendMany($config, $tippingFromAddress, $tippingToAddress, $amountToSend, $currentBalance) === FALSE) {
       return 'error';
     }
-  }
-  else {
+  } else {
     return 'no_balance';
   }
 
@@ -548,16 +550,7 @@ function doRpcCallOld($config, $json) {
   $port = $config['rpcport'];
   $address = $config['rpcaddress'];
 
-  $opts = array(
-    'http' => array(
-      'method'  => 'POST',
-      'headers' => ['Content-Type' => 'text/plain'],
-      'auth'    => [
-        $user,
-        $password
-      ],
-    )
-  );
+  $opts = array('http' => array('method' => 'POST', 'headers' => ['Content-Type' => 'text/plain'], 'auth' => [$user, $password],));
 
   $opts['http']['json'] = $json;
 
@@ -566,13 +559,12 @@ function doRpcCallOld($config, $json) {
   if ($request === FALSE) {
     notifyOnException('Error on RPC', $config, '', $request);
     return FALSE;
-  }
-  else {
+  } else {
     return $request;
   }
 }
 
-function doRpcCall($config, $json){
+function doRpcCall($config, $json) {
   $user = $config['rpcuser'];
   $password = $config['rpcpass'];
   $port = $config['rpcport'];
@@ -591,11 +583,10 @@ function doRpcCall($config, $json){
   $result = curl_exec($ch);
   if (curl_errno($ch) || $result === FALSE || empty($result)) {
     notifyOnException('Error on RPC', $config, '', curl_error($ch));
-    curl_close ($ch);
+    curl_close($ch);
     return FALSE;
-  }
-  else {
-    curl_close ($ch);
+  } else {
+    curl_close($ch);
     return $result;
   }
 
@@ -611,8 +602,7 @@ function getNewAddress($config) {
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
     return FALSE;
-  }
-  else {
+  } else {
     $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
@@ -657,18 +647,17 @@ function z_getBalance($config, $tipping, $confirmations = 1) {
   $response = doRpcCall($config, $json);
   if ($response === FALSE) {
     return FALSE;
-  }
-  else {
+  } else {
     $jsondec = json_decode($response, true);
     return $jsondec['result'];
   }
 }
 
-function returnResponse(){
+function returnResponse() {
   ignore_user_abort(true);
   ob_start();
   header('Connection: close');
-  header('Content-Length: '.ob_get_length());
+  header('Content-Length: ' . ob_get_length());
   header("Content-Encoding: none");
   header("Status: 200");
   ob_end_flush();
