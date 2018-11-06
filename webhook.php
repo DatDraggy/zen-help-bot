@@ -169,7 +169,7 @@ Knowledge Commands (click to get info):
 /helpdesk
 /securenoderoi
 /supernoderoi
-/deposit
+/stakeratio
 
 Reputationsystem:
 /thanks
@@ -179,6 +179,7 @@ Reputationsystem:
 Tippingbot:
 How to use: /tipbot
 /withdraw
+/deposit
 /tip
 /myaddress
 /mybalance
@@ -319,7 +320,13 @@ Your current address is ' . $address;
     $roiMessage = calculateSuperRoi();
     sendMessage($chatId, $roiMessage, $messageIdToReplyTo);
     break;
+  case '/nodeamount':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType, $chatId);
+    sendMessage($chatId, "More nodes result in lower rewards for each individual node. Less nodes result in higher rewards for each individual node. 
+That's because nodes get 10% of the block reward, which needs to be spread across all nodes evenly.", $messageIdToReplyTo);
+    break;
   case '/stakeratio':
+    $timeouts = checkLastExecute($timeouts, $command, $chatType, $chatId);
     $ratio = getStakeNodeRatio();
     sendMessage($chatId, "Current stake to supply ratio: $ratio%", $messageIdToReplyTo);
     break;
@@ -338,7 +345,6 @@ Your current address is ' . $address;
       }
     }
     break;
-
   case '/tip':
     if ($chatType === 'private') {
       sendMessage($chatId, "Sends a tip to the user you replied to. Without a reply attached to your message, this command won't do anything.
