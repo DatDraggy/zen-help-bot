@@ -149,6 +149,8 @@ We do not have masternodes. ' . $nodeText . '
     if ($chatType === 'private') {
       sendMessage($chatId, '
 Here is a list of available commands. Click them to find out what they do.
+Note that you have to add @zenhelp_bot behind the command when trying it in the Horizen group, because of the other bots.
+Example: /zenprice@zenhelp_bot
 
 Knowledge Commands (click to get info):
 /zenprice
