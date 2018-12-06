@@ -132,7 +132,7 @@ More info can be found here: https://horizen.global/supernodes
 
 Keep in mind that these estimates are very rough and that the number of secure nodes can raise/fall at any time, therefore changing the estimates. 
 
-You can see the current daily reward for a secure node here: https://supernodes.zensystem.io
+You can see the current daily reward for a super node here: https://supernodes.zensystem.io
 ', $messageIdToReplyTo);
     break;
 
