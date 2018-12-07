@@ -340,7 +340,7 @@ function calculateSuperRoi() {
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $valueUsd = number_format($pricesCoinmarket['price_usd'], 2);
   $minedPerMonth = 216000;
-  $vpsCost = 25.00;
+  $vpsCost = 12.00;
   $monthlyRewardZen = $minedPerMonth * 0.1 / $amountNodes;
   $monthlyReward = $monthlyRewardZen * $valueUsd;
   $monthlyProfit = $monthlyReward - $vpsCost;
