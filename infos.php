@@ -1,6 +1,7 @@
 <?php
 
-$infos['groups'] = 'English: @ZenCash
+$infos['groups'] = 'Official Info: @horizenglobal
+English: @horizencommunity and @ZenCash
 Russian: @ZenRu
 Spanish: @zencashlatinoamerica
 Chinese(Telegram): @ZenCashZh
