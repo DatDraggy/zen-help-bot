@@ -13,6 +13,7 @@ if(file_exists($config['timeoutsave'])){
 }
 else{
   file_put_contents($config['timeoutsave'], '{}');
+  $timeouts = json_decode(file_get_contents($config['timeoutsave']),true);
 }
 
 $chatId = $data['message']['chat']['id'];
