@@ -1,22 +1,6 @@
 <?php
 //$config['url'] = 'https://api.telegram.org/bot' . $config['token'] . '/';
 function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
-  global $config;
-  /*  $url = $config['url'] . "sendMessage";
-    $data = array('disable_web_page_preview' => 'true', 'parse_mode' => 'html', 'chat_id' => $chatId, 'text' => $text, 'reply_to_message_id' => $replyTo, 'reply_markup' => $replyMarkup);
-
-  // use key 'http' even if you send the request to https://...
-    $options = array(
-        'http' => array(
-            'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
-            'method'  => 'POST',
-            'content' => http_build_query($data)
-        )
-    );
-    $context  = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-    if ($result === FALSE) { sendMessage(175933892, $result); }*/
-
   $data = array(
     'disable_web_page_preview' => true,
     'parse_mode' => 'html',
@@ -26,8 +10,6 @@ function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
     'reply_markup' => $replyMarkup
   );
   return makeApiRequest('sendMessage', $data);
-  $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
-  //Might use http_build_query in the future
 }
 
 function makeApiRequest($method, $data) {
@@ -90,13 +72,9 @@ CMC Rank: ' . number_format($pricesCoinmarket['rank'], 0);
 }
 
 function getAdmins($chatId) {
-  global $config;
   $data = array('chat_id' => $chatId);
   $admins = makeApiRequest('getChatAdministrators', $data);
-  //$response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id=' . $chatId);
-  //Do things
   $result = '';
-  //$admins = json_decode($response, true)['result'];
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
