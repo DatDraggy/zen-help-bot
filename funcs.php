@@ -17,8 +17,32 @@ function sendMessage($chatId, $text, $replyTo = '', $replyMarkup = '') {
     $result = file_get_contents($url, false, $context);
     if ($result === FALSE) { sendMessage(175933892, $result); }*/
 
+  $data = array(
+    'disable_web_page_preview' => true,
+    'parse_mode' => 'html',
+    'chat_id' => $chatId,
+    'text' => $text,
+    'reply_to_message_id' => $replyTo,
+    'reply_markup' => $replyMarkup
+  );
+  return makeApiRequest('sendMessage', $data);
   $response = file_get_contents($config['url'] . "sendMessage?disable_web_page_preview=true&parse_mode=html&chat_id=$chatId&text=" . urlencode($text) . "&reply_to_message_id=$replyTo&reply_markup=$replyMarkup");
   //Might use http_build_query in the future
+}
+
+function makeApiRequest($method, $data) {
+  global $config;
+  $url = $config['url'] . $method;
+
+  $options = array(
+    'http' => array(
+      'header' => "Content-type: application/json\r\n",
+      'method' => 'POST',
+      'content' => json_encode($data)
+    )
+  );
+  $context = stream_context_create($options);
+  return json_decode(file_get_contents($url, false, $context), true)['result'];
 }
 
 function getCurrentSecureReward() {
@@ -56,21 +80,23 @@ function getCurrentPrice() {
   $bittrexJson = file_get_contents('https://bittrex.com/api/v1.1/public/getmarketsummary?market=btc-zen');
   $pricesCoinmarket = json_decode($coinmarketJson, true)[0];
   $pricesBittrex = json_decode($bittrexJson, true)['result'][0];
-//return print_r($pricesBittrex, true);
+  //return print_r($pricesBittrex, true);
   return 'Last ZEN price: ' . number_format($pricesBittrex['Last'], 8) . '
 24h High: ' . number_format($pricesBittrex['High'], 8) . '
 24h Low: ' . number_format($pricesBittrex['Low'], 8) . '
 Price in Dollars: $' . number_format($pricesCoinmarket['price_usd'], 2) . '
 CMC Rank: ' . number_format($pricesCoinmarket['rank'], 0);
-//return 'Price in Dollars: $'.number_format($pricesCoinmarket['price_usd'], 2);
+  //return 'Price in Dollars: $'.number_format($pricesCoinmarket['price_usd'], 2);
 }
 
 function getAdmins($chatId) {
   global $config;
-  $response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id=' . $chatId);
+  $data = array('chat_id' => $chatId);
+  $admins = makeApiRequest('getChatAdministrators', $data);
+  //$response = file_get_contents($config['url'] . 'getChatAdministrators?chat_id=' . $chatId);
   //Do things
   $result = '';
-  $admins = json_decode($response, true)['result'];
+  //$admins = json_decode($response, true)['result'];
   foreach ($admins as $admin) {
     $is_bot = $admin['user']['is_bot'];
     $firstName = $admin['user']['first_name'];
@@ -550,7 +576,16 @@ function doRpcCallOld($config, $json) {
   $port = $config['rpcport'];
   $address = $config['rpcaddress'];
 
-  $opts = array('http' => array('method' => 'POST', 'headers' => ['Content-Type' => 'text/plain'], 'auth' => [$user, $password],));
+  $opts = array(
+    'http' => array(
+      'method' => 'POST',
+      'headers' => ['Content-Type' => 'text/plain'],
+      'auth' => [
+        $user,
+        $password
+      ],
+    )
+  );
 
   $opts['http']['json'] = $json;
 
