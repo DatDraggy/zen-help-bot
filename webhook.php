@@ -4,7 +4,8 @@ $config = array();
 require_once(__DIR__ . "/funcs.php");
 require_once(__DIR__ . "/config.php");
 require_once(__DIR__ . "/infos.php");
-
+require_once(__DIR__ . '/vendor/autoload.php');
+//^ guzzlehttp
 $response = file_get_contents('php://input');
 $data = json_decode($response, true);
 $dump = print_r($data, true);
