@@ -6,5 +6,5 @@ Russian: @horizenru
 Portuguese: @HorizenPortuguese
 Chinese(Telegram): @ZenCashZh
 Chinese(WeChat): <a href="https://u.wechat.com/IFl8PTtHf7YmHP34XqbI6As">https://u.wechat.com/IFl8PTtHf7YmHP34XqbI6As</a>
-International Discord: https://discord.gg/tmFQmfw
+International Discord: https://horizen.io/invite/discord
 ';
